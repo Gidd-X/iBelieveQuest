@@ -1,0 +1,112 @@
+'use client';
+
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { getPassageSuggestions } from '@/app/actions';
+import { Sparkles, BookText, Loader2, Quote, AlertCircle, Send } from 'lucide-react';
+import { useToast } from "@/hooks/use-toast";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
+export default function AiSuggester() {
+  const [text, setText] = useState('');
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
+
+  const handleGetSuggestions = async () => {
+    setIsLoading(true);
+    setError(null);
+    setSuggestions([]);
+
+    const result = await getPassageSuggestions(text);
+
+    if ('error' in result) {
+      setError(result.error);
+      toast({
+        variant: "destructive",
+        title: "An error occurred",
+        description: result.error,
+      });
+    } else {
+      setSuggestions(result.suggestions);
+    }
+    setIsLoading(false);
+  };
+
+  return (
+    <section>
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-3">
+            <Sparkles className="text-accent" />
+            <span>Engage &amp; Discover</span>
+          </CardTitle>
+          <CardDescription>
+            Leave a comment, or just share a thought. Use our AI tool to find related passages to deepen the conversation.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Textarea
+            placeholder="Start writing your thoughts here..."
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            rows={5}
+            aria-label="Your comment or thought"
+          />
+          <div className="flex flex-wrap gap-2">
+            <Button>
+              <Send className="mr-2 h-4 w-4" />
+              Post Comment
+            </Button>
+            <Button onClick={handleGetSuggestions} disabled={isLoading || !text} variant="outline">
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Getting Suggestions...
+                </>
+              ) : (
+                <>
+                  <BookText className="mr-2 h-4 w-4" />
+                  Get Passage Suggestions
+                </>
+              )}
+            </Button>
+          </div>
+        </CardContent>
+        {(isLoading || suggestions.length > 0 || error) && (
+        <CardFooter className="flex flex-col items-start gap-4">
+            {isLoading && (
+              <div className="flex items-center text-muted-foreground">
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <span>Searching sacred texts for relevant passages...</span>
+              </div>
+            )}
+            {error && !isLoading && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+            {suggestions.length > 0 && !isLoading && (
+              <div className="w-full space-y-4">
+                <h4 className="font-semibold">Suggested Passages:</h4>
+                <ul className="space-y-4">
+                  {suggestions.map((suggestion, index) => (
+                    <li key={index} className="flex gap-3">
+                      <Quote className="h-5 w-5 flex-shrink-0 text-primary" />
+                      <p className="border-l-2 border-accent pl-4 italic text-muted-foreground">{suggestion}</p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+        </CardFooter>
+        )}
+      </Card>
+    </section>
+  );
+}

@@ -1,3 +1,28 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "article-1",
+      "description": "A winding path through a forest.",
+      "imageUrl": "https://picsum.photos/seed/101/1200/800",
+      "imageHint": "path forest"
+    },
+    {
+      "id": "article-2",
+      "description": "An open book on a table.",
+      "imageUrl": "https://picsum.photos/seed/102/1200/800",
+      "imageHint": "open book"
+    },
+    {
+      "id": "article-3",
+      "description": "Stars in the night sky.",
+      "imageUrl": "https://picsum.photos/seed/103/1200/800",
+      "imageHint": "night sky"
+    },
+    {
+      "id": "about-us-hero",
+      "description": "A person looking out over a misty mountain range at sunrise.",
+      "imageUrl": "https://picsum.photos/seed/104/1600/900",
+      "imageHint": "misty mountains"
+    }
+  ]
 }
