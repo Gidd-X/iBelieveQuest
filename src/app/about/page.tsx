@@ -16,7 +16,7 @@ export default function AboutPage() {
             priority
             data-ai-hint={heroImage.imageHint}
           />
-          <div className="absolute inset-0 bg-primary/30" />
+          <div className="absolute inset-0 bg-gradient-to-t from-primary/70 to-primary/30" />
           <div className="absolute inset-0 flex items-center justify-center">
             <h1 className="p-4 text-center font-headline text-4xl font-bold text-white md:text-6xl" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
               Our Quest
