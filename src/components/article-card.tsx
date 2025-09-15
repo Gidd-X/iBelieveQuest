@@ -40,7 +40,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
         <CardFooter className="flex items-center justify-between p-6 pt-0">
             <div className="flex flex-wrap gap-2">
                 {article.tags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="capitalize">{tag}</Badge>
+                    <Badge key={tag} variant="default" className="capitalize">{tag}</Badge>
                 ))}
             </div>
             <ArrowRight className="h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary" />

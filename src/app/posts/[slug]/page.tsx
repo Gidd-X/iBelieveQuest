@@ -46,7 +46,7 @@ export default function ArticlePage({ params }: ArticlePageProps) {
       <div className="mb-8">
         <div className="mb-4 flex flex-wrap gap-2">
           {article.tags.map((tag) => (
-            <Badge key={tag} variant="secondary" className="capitalize">{tag}</Badge>
+            <Badge key={tag} variant="default" className="capitalize">{tag}</Badge>
           ))}
         </div>
         <h1 className="font-headline text-4xl font-bold leading-tight text-primary md:text-5xl">
