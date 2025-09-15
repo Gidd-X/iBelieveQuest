@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { BookOpen, Search, Shield } from 'lucide-react';
+import { BookOpen, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
@@ -20,10 +20,6 @@ export default function Header() {
             </Link>
             <Link href="/about" className="text-foreground transition-colors hover:text-primary">
               About
-            </Link>
-            <Link href="/admin" className="flex items-center gap-2 text-foreground transition-colors hover:text-primary">
-              <Shield size={16} />
-              Admin
             </Link>
           </nav>
           <div className="hidden items-center space-x-2 md:flex">
