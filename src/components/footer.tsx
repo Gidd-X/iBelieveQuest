@@ -24,7 +24,7 @@ export default function Footer() {
                 className="max-w-sm"
                 aria-label="Email for newsletter"
               />
-              <Button type="submit" className="bg-accent text-accent-foreground hover:bg-accent/90">
+              <Button type="submit">
                 Subscribe
               </Button>
             </form>
