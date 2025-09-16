@@ -3,13 +3,15 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { getPassageSuggestions } from '@/app/actions';
-import { Sparkles, BookText, Loader2, Quote, AlertCircle, Send } from 'lucide-react';
+import { Sparkles, BookText, Loader2, Quote, AlertCircle, Send, User } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function AiSuggester() {
+  const [name, setName] = useState('');
   const [text, setText] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -49,13 +51,25 @@ export default function AiSuggester() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Textarea
-            placeholder="Start writing your thoughts here..."
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            rows={5}
-            aria-label="Your comment or thought"
-          />
+            <div className="space-y-2">
+                <div className="relative">
+                    <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                        placeholder="Your Name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        aria-label="Your Name"
+                        className="pl-10"
+                    />
+                </div>
+                <Textarea
+                    placeholder="Start writing your thoughts here..."
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                    rows={5}
+                    aria-label="Your comment or thought"
+                />
+            </div>
           <div className="flex flex-wrap gap-2">
             <Button>
               <Send className="mr-2 h-4 w-4" />
