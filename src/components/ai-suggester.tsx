@@ -1,25 +1,26 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { getPassageSuggestions } from '@/app/actions';
+import { getPassageSuggestions, postComment } from '@/app/actions';
 import { Sparkles, BookText, Loader2, Quote, AlertCircle, Send, User } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
-export default function AiSuggester() {
+export default function AiSuggester({ slug }: { slug: string }) {
   const [name, setName] = useState('');
   const [text, setText] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isGettingSuggestions, setIsGettingSuggestions] = useState(false);
+  const [isPostingComment, startPostingComment] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
   const handleGetSuggestions = async () => {
-    setIsLoading(true);
+    setIsGettingSuggestions(true);
     setError(null);
     setSuggestions([]);
 
@@ -35,8 +36,33 @@ export default function AiSuggester() {
     } else {
       setSuggestions(result.suggestions);
     }
-    setIsLoading(false);
+    setIsGettingSuggestions(false);
   };
+  
+  const handlePostComment = async () => {
+    startPostingComment(async () => {
+      setError(null);
+      const result = await postComment(slug, name, text);
+      if (result?.error) {
+        setError(result.error);
+        toast({
+          variant: 'destructive',
+          title: 'Failed to post comment',
+          description: result.error,
+        });
+      } else {
+        toast({
+          title: 'Comment posted!',
+          description: 'Your comment has been successfully posted.',
+        });
+        setName('');
+        setText('');
+        setSuggestions([]);
+      }
+    });
+  };
+
+  const isLoading = isGettingSuggestions || isPostingComment;
 
   return (
     <section>
@@ -60,6 +86,7 @@ export default function AiSuggester() {
                         onChange={(e) => setName(e.target.value)}
                         aria-label="Your Name"
                         className="pl-10"
+                        disabled={isLoading}
                     />
                 </div>
                 <Textarea
@@ -68,15 +95,25 @@ export default function AiSuggester() {
                     onChange={(e) => setText(e.target.value)}
                     rows={5}
                     aria-label="Your comment or thought"
+                    disabled={isLoading}
                 />
             </div>
           <div className="flex flex-wrap gap-2">
-            <Button>
-              <Send className="mr-2 h-4 w-4" />
-              Post Comment
+            <Button onClick={handlePostComment} disabled={isLoading || !text || !name}>
+              {isPostingComment ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Posting...
+                </>
+              ) : (
+                <>
+                  <Send className="mr-2 h-4 w-4" />
+                  Post Comment
+                </>
+              )}
             </Button>
             <Button onClick={handleGetSuggestions} disabled={isLoading || !text} variant="outline">
-              {isLoading ? (
+              {isGettingSuggestions ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Getting Suggestions...
@@ -90,9 +127,9 @@ export default function AiSuggester() {
             </Button>
           </div>
         </CardContent>
-        {(isLoading || suggestions.length > 0 || error) && (
+        {(isGettingSuggestions || suggestions.length > 0 || error) && (
         <CardFooter className="flex flex-col items-start gap-4">
-            {isLoading && (
+            {isGettingSuggestions && (
               <div className="flex items-center text-muted-foreground">
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 <span>Searching sacred texts for relevant passages...</span>
@@ -105,7 +142,7 @@ export default function AiSuggester() {
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
-            {suggestions.length > 0 && !isLoading && (
+            {suggestions.length > 0 && !isGettingSuggestions && (
               <div className="w-full space-y-4">
                 <h4 className="font-semibold">Suggested Passages:</h4>
                 <ul className="space-y-4">

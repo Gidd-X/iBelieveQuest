@@ -20,7 +20,7 @@ export type Article = {
   content: string;
   tags: string[];
   image: ImagePlaceholder;
-  comments: Comment[];
+  comments: Comment[]; // This will now be populated from Supabase, but we can keep the structure
 };
 
 function findImage(id: string): ImagePlaceholder {
@@ -51,15 +51,7 @@ export const articles: Article[] = [
 <p>When we allow ourselves to question, we create space for God to meet us in our uncertainty. We move beyond a faith of easy answers and into a relationship that can withstand the complexities of life. This article explores practical ways to lean into doubt, not as an enemy, but as a guide on the quest for truth.</p>`,
     tags: ['doubt', 'faith', 'spirituality'],
     image: findImage('article-1'),
-    comments: [
-      {
-        id: 1,
-        author: 'Samuel Jones',
-        avatarUrl: 'https://picsum.photos/seed/commenter1/40/40',
-        date: 'October 27, 2023',
-        text: "This resonates so much. I've always felt guilty about my questions. Thank you for this perspective."
-      }
-    ]
+    comments: [] // Comments will be loaded from Supabase
   },
   {
     id: '2',
@@ -74,22 +66,7 @@ export const articles: Article[] = [
 <p>This article delves into how various Christian traditions have approached the concept of divine mystery and how we can cultivate a sense of wonder and trust in our own lives, even when the path ahead is unclear.</p>`,
     tags: ['meaning', 'purpose', 'christianity', 'mystery'],
     image: findImage('article-2'),
-    comments: [
-      {
-        id: 1,
-        author: 'Grace Li',
-        avatarUrl: 'https://picsum.photos/seed/commenter2/40/40',
-        date: 'October 23, 2023',
-        text: 'A beautiful and necessary reminder to be comfortable with the unknown. Thank you for writing this.'
-      },
-      {
-        id: 2,
-        author: 'Ben Carter',
-        avatarUrl: 'https://picsum.photos/seed/commenter3/40/40',
-        date: 'October 24, 2023',
-        text: "This is a tough one for me as an engineer, but I know it's something I need to work on. Great food for thought."
-      }
-    ]
+    comments: [] // Comments will be loaded from Supabase
   },
   {
     id: '3',
@@ -104,7 +81,7 @@ export const articles: Article[] = [
 <p>We'll look at the pros and cons of different models and argue that while the form may change, the function of community—for encouragement, accountability, and shared worship—is an indispensable part of a thriving spiritual life.</p>`,
     tags: ['community', 'church', 'spirituality'],
     image: findImage('article-3'),
-    comments: []
+    comments: [] // Comments will be loaded from Supabase
   }
 ];
 

@@ -1,12 +1,14 @@
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { articles, getArticleBySlug } from '@/lib/data';
+import { articles, getArticleBySlug, type Comment as StaticComment } from '@/lib/data';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import AiSuggester from '@/components/ai-suggester';
 import { MessageSquare, User } from 'lucide-react';
 import type { Metadata } from 'next';
+import { createServerClient } from '@/lib/supabase/server';
+import { formatDistanceToNow } from 'date-fns';
 
 type ArticlePageProps = {
   params: {
@@ -34,12 +36,32 @@ export async function generateStaticParams() {
   }));
 }
 
-export default function ArticlePage({ params }: ArticlePageProps) {
+export default async function ArticlePage({ params }: ArticlePageProps) {
   const article = getArticleBySlug(params.slug);
 
   if (!article) {
     notFound();
   }
+
+  const supabase = createServerClient();
+  const { data: comments, error: commentsError } = await supabase
+    .from('comments')
+    .select('*')
+    .eq('post_slug', params.slug)
+    .order('created_at', { ascending: false });
+
+  if (commentsError) {
+    console.error("Failed to fetch comments", commentsError);
+    // Continue rendering the page even if comments fail to load
+  }
+
+  const formattedComments = comments?.map(comment => ({
+    ...comment,
+    // Add a default avatar
+    avatarUrl: `https://picsum.photos/seed/${comment.name}/40/40`,
+    date: `${formatDistanceToNow(new Date(comment.created_at))} ago`
+  })) ?? [];
+
 
   return (
     <article className="mx-auto max-w-4xl">
@@ -86,25 +108,25 @@ export default function ArticlePage({ params }: ArticlePageProps) {
       <section id="comments" className="space-y-8">
         <h2 className="flex items-center gap-3 font-headline text-3xl font-bold">
             <MessageSquare className="text-primary" />
-            <span>Comments ({article.comments.length})</span>
+            <span>Comments ({formattedComments.length})</span>
         </h2>
         <div className="space-y-6">
-          {article.comments.map((comment) => (
+          {formattedComments.map((comment) => (
             <div key={comment.id} className="flex gap-4">
               <Avatar>
-                <AvatarImage src={comment.avatarUrl} alt={comment.author} />
+                <AvatarImage src={comment.avatarUrl} alt={comment.name || 'User'} />
                 <AvatarFallback><User /></AvatarFallback>
               </Avatar>
               <div className="flex-1 rounded-lg bg-secondary/30 p-4">
                 <div className="mb-1 flex items-center justify-between">
-                  <p className="font-semibold">{comment.author}</p>
+                  <p className="font-semibold">{comment.name}</p>
                   <p className="text-xs text-muted-foreground">{comment.date}</p>
                 </div>
-                <p className="text-sm">{comment.text}</p>
+                <p className="text-sm">{comment.comment}</p>
               </div>
             </div>
           ))}
-           {article.comments.length === 0 && (
+           {formattedComments.length === 0 && (
             <p className="text-muted-foreground">Be the first to leave a comment.</p>
           )}
         </div>
@@ -112,7 +134,7 @@ export default function ArticlePage({ params }: ArticlePageProps) {
 
       <Separator className="my-12" />
 
-      <AiSuggester />
+      <AiSuggester slug={params.slug} />
 
     </article>
   );
