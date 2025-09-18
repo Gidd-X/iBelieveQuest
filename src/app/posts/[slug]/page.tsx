@@ -1,14 +1,12 @@
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { articles, getArticleBySlug, type Comment as StaticComment } from '@/lib/data';
+import { articles, getArticleBySlug } from '@/lib/data';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
-import AiSuggester from '@/components/ai-suggester';
-import { MessageSquare, User } from 'lucide-react';
 import type { Metadata } from 'next';
 import { createServerClient } from '@/lib/supabase/server';
-import { formatDistanceToNow } from 'date-fns';
+import CommentSection from '@/components/comment-section';
 
 type ArticlePageProps = {
   params: {
@@ -42,26 +40,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   if (!article) {
     notFound();
   }
-
-  const supabase = createServerClient();
-  const { data: comments, error: commentsError } = await supabase
-    .from('comments')
-    .select('*')
-    .eq('blog_id', article.id)
-    .order('created_at', { ascending: false });
-
-  if (commentsError) {
-    console.error("Failed to fetch comments", commentsError);
-    // Continue rendering the page even if comments fail to load
-  }
-
-  const formattedComments = comments?.map(comment => ({
-    ...comment,
-    // Add a default avatar
-    avatarUrl: `https://picsum.photos/seed/${comment.name}/40/40`,
-    date: `${formatDistanceToNow(new Date(comment.created_at))} ago`
-  })) ?? [];
-
 
   return (
     <article className="mx-auto max-w-4xl">
@@ -105,36 +83,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       
       <Separator className="my-12" />
 
-      <section id="comments" className="space-y-8">
-        <h2 className="flex items-center gap-3 font-headline text-3xl font-bold">
-            <MessageSquare className="text-primary" />
-            <span>Comments ({formattedComments.length})</span>
-        </h2>
-        <div className="space-y-6">
-          {formattedComments.map((comment) => (
-            <div key={comment.id} className="flex gap-4">
-              <Avatar>
-                <AvatarImage src={comment.avatarUrl} alt={comment.name || 'User'} />
-                <AvatarFallback><User /></AvatarFallback>
-              </Avatar>
-              <div className="flex-1 rounded-lg bg-secondary/30 p-4">
-                <div className="mb-1 flex items-center justify-between">
-                  <p className="font-semibold">{comment.name}</p>
-                  <p className="text-xs text-muted-foreground">{comment.date}</p>
-                </div>
-                <p className="text-sm">{comment.comment}</p>
-              </div>
-            </div>
-          ))}
-           {formattedComments.length === 0 && (
-            <p className="text-muted-foreground">Be the first to leave a comment.</p>
-          )}
-        </div>
-      </section>
-
-      <Separator className="my-12" />
-
-      <AiSuggester slug={params.slug} blogId={parseInt(article.id, 10)} />
+      <CommentSection blogId={parseInt(article.id, 10)} slug={params.slug} />
 
     </article>
   );

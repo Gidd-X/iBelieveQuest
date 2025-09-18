@@ -9,8 +9,10 @@ import { getPassageSuggestions, postComment } from '@/app/actions';
 import { Sparkles, BookText, Loader2, Quote, AlertCircle, Send, User } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import type { Tables } from '@/lib/supabase.type';
 
-export default function AiSuggester({ slug, blogId }: { slug: string, blogId: number }) {
+
+export default function AiSuggester({ slug, blogId, onCommentPosted }: { slug: string, blogId: number, onCommentPosted: (comment: Tables<'comments'>) => void }) {
   const [name, setName] = useState('');
   const [text, setText] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -42,15 +44,15 @@ export default function AiSuggester({ slug, blogId }: { slug: string, blogId: nu
   const handlePostComment = async () => {
     startPostingComment(async () => {
       setError(null);
-      const result = await postComment(blogId, name, text, slug);
-      if (result?.error) {
-        setError(result.error);
+      const { data: newComment, error: postError } = await postComment(blogId, name, text);
+      if (postError) {
+        setError(postError);
         toast({
           variant: 'destructive',
           title: 'Failed to post comment',
-          description: result.error,
+          description: postError,
         });
-      } else {
+      } else if (newComment) {
         toast({
           title: 'Comment posted!',
           description: 'Your comment has been successfully posted.',
@@ -58,6 +60,7 @@ export default function AiSuggester({ slug, blogId }: { slug: string, blogId: nu
         setName('');
         setText('');
         setSuggestions([]);
+        onCommentPosted(newComment);
       }
     });
   };
