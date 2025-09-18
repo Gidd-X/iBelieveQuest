@@ -47,7 +47,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const { data: comments, error: commentsError } = await supabase
     .from('comments')
     .select('*')
-    .eq('post_slug', params.slug)
+    .eq('blog_id', article.id)
     .order('created_at', { ascending: false });
 
   if (commentsError) {
@@ -134,7 +134,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
       <Separator className="my-12" />
 
-      <AiSuggester slug={params.slug} />
+      <AiSuggester slug={params.slug} blogId={parseInt(article.id, 10)} />
 
     </article>
   );

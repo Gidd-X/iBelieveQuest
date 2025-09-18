@@ -18,7 +18,7 @@ export async function getPassageSuggestions(text: string): Promise<SuggestReligi
   }
 }
 
-export async function postComment(slug: string, name: string, text: string) {
+export async function postComment(blog_id: number, name: string, text: string, slug: string) {
   if (!name || name.trim().length === 0) {
     return { error: 'Please enter your name.' };
   }
@@ -32,7 +32,7 @@ export async function postComment(slug: string, name: string, text: string) {
   const supabase = createServerClient();
   const { data, error } = await supabase
     .from('comments')
-    .insert([{ name, comment: text, post_slug: slug }]);
+    .insert([{ name, comment: text, blog_id }]);
 
   if (error) {
     console.error('Error posting comment:', error);

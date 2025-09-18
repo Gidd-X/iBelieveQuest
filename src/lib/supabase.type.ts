@@ -46,27 +46,35 @@ export type Database = {
       }
       comments: {
         Row: {
+          blog_id: number | null
           comment: string | null
           created_at: string
           id: number
           name: string | null
-          post_slug: string
         }
         Insert: {
+          blog_id?: number | null
           comment?: string | null
           created_at?: string
           id?: number
           name?: string | null
-          post_slug: string
         }
         Update: {
+          blog_id?: number | null
           comment?: string | null
           created_at?: string
           id?: number
           name?: string | null
-          post_slug?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "comments_blog_id_fkey"
+            columns: ["blog_id"]
+            isOneToOne: false
+            referencedRelation: "Blogs"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

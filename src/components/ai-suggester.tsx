@@ -10,7 +10,7 @@ import { Sparkles, BookText, Loader2, Quote, AlertCircle, Send, User } from 'luc
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
-export default function AiSuggester({ slug }: { slug: string }) {
+export default function AiSuggester({ slug, blogId }: { slug: string, blogId: number }) {
   const [name, setName] = useState('');
   const [text, setText] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -42,7 +42,7 @@ export default function AiSuggester({ slug }: { slug: string }) {
   const handlePostComment = async () => {
     startPostingComment(async () => {
       setError(null);
-      const result = await postComment(slug, name, text);
+      const result = await postComment(blogId, name, text, slug);
       if (result?.error) {
         setError(result.error);
         toast({
