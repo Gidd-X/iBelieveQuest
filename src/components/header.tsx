@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import { BookOpen, Search } from 'lucide-react';
+import Image from 'next/image';
+import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 
 export default function Header() {
   return (
@@ -9,9 +9,14 @@ export default function Header() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between">
           <div className="flex items-center">
-            <Link href="/" className="flex items-center gap-2 text-2xl font-bold text-primary font-headline">
-              <BookOpen className="h-7 w-7" />
-              <span>iBelieveQuest</span>
+            <Link href="/" className="flex items-center gap-2">
+              <Image
+                src="/logo.png"
+                alt="iBelieveQuest Logo"
+                width={150}
+                height={40}
+                priority
+              />
             </Link>
           </div>
           <nav className="hidden items-center space-x-8 md:flex">
