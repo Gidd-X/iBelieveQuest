@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <div className="space-y-12">
       <div className="text-center">
-        <h1 className="font-headline text-4xl font-bold text-primary md:text-5xl">Welcome to iBelieveQuest</h1>
+        <h1 className="font-headline text-4xl font-bold text-primary md:text-5xl">Welcome to iBelieve Quest</h1>
         <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
           A space where faith meets questions, and questions lead to discovery.
         </p>
