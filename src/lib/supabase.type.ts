@@ -23,6 +23,8 @@ export type Database = {
           id: number
           tags: string[] | null
           title: string | null
+          slug: string | null
+          excerpt: string | null
         }
         Insert: {
           author?: string | null
@@ -32,6 +34,8 @@ export type Database = {
           id?: number
           tags?: string[] | null
           title?: string | null
+          slug?: string | null
+          excerpt?: string | null
         }
         Update: {
           author?: string | null
@@ -41,6 +45,8 @@ export type Database = {
           id?: number
           tags?: string[] | null
           title?: string | null
+          slug?: string | null
+          excerpt?: string | null
         }
         Relationships: []
       }

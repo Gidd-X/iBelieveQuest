@@ -1,11 +1,10 @@
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { articles, getArticleBySlug } from '@/lib/data';
+import { getArticleBySlug, getAllArticleSlugs } from '@/app/actions';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import type { Metadata } from 'next';
-import { createServerClient } from '@/lib/supabase/server';
 import CommentSection from '@/components/comment-section';
 
 type ArticlePageProps = {
@@ -15,7 +14,7 @@ type ArticlePageProps = {
 };
 
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
-  const article = getArticleBySlug(params.slug);
+  const article = await getArticleBySlug(params.slug);
   if (!article) {
     return {
       title: 'Not Found'
@@ -29,13 +28,12 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
 }
 
 export async function generateStaticParams() {
-  return articles.map((article) => ({
-    slug: article.slug,
-  }));
+  const slugs = await getAllArticleSlugs();
+  return slugs;
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
-  const article = getArticleBySlug(params.slug);
+  const article = await getArticleBySlug(params.slug);
 
   if (!article) {
     notFound();

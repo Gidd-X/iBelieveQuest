@@ -1,7 +1,13 @@
-import { articles } from '@/lib/data';
+import Link from 'next/link';
+import { getArticles } from '@/app/actions';
 import ArticleCard from '@/components/article-card';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 
-export default function Home() {
+export default async function Home({ searchParams }: { searchParams: { page?: string }}) {
+  const page = Number(searchParams.page) || 1;
+  const { articles, hasMore, totalPages } = await getArticles({ page });
+
   return (
     <div className="space-y-12">
       <div className="text-center">
@@ -11,11 +17,37 @@ export default function Home() {
         </p>
       </div>
       
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {articles.map((article) => (
-          <ArticleCard key={article.id} article={article} />
-        ))}
-      </div>
+      {articles.length > 0 ? (
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {articles.map((article) => (
+            <ArticleCard key={article.id} article={article} />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-12">
+          <p className="text-muted-foreground">No articles found. Check back later!</p>
+        </div>
+      )}
+
+      {articles.length > 0 && totalPages > 1 && (
+        <div className="flex justify-center items-center gap-4">
+          <Button asChild variant="outline" disabled={page <= 1}>
+            <Link href={page > 1 ? `/?page=${page - 1}` : '#'}>
+              <ArrowLeft className="mr-2" />
+              Previous
+            </Link>
+          </Button>
+          <span className="text-sm text-muted-foreground">
+            Page {page} of {totalPages}
+          </span>
+          <Button asChild variant="outline" disabled={!hasMore}>
+            <Link href={hasMore ? `/?page=${page + 1}` : '#'}>
+              Next
+              <ArrowRight className="ml-2" />
+            </Link>
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
