@@ -7,6 +7,9 @@ import { Separator } from '@/components/ui/separator';
 import type { Metadata } from 'next';
 import CommentSection from '@/components/comment-section';
 
+// Allow dynamic params for articles not in generateStaticParams
+export const dynamicParams = true;
+
 type ArticlePageProps = {
   params: Promise<{
     id: string;
