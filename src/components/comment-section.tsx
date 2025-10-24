@@ -1,13 +1,13 @@
 
 'use client';
 
-import { useState, useEffect, useTransition } from 'react';
-import { getComments, postComment, getPassageSuggestions } from '@/app/actions';
+import { useState, useEffect } from 'react';
+import { getComments } from '@/app/actions';
 import type { Tables } from '@/lib/supabase.type';
 import { formatDistanceToNow } from 'date-fns';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Loader2, MessageSquare, Send, User } from 'lucide-react';
+import { Loader2, MessageSquare, User } from 'lucide-react';
 import AiSuggester from './ai-suggester';
 import { Separator } from './ui/separator';
 
@@ -18,11 +18,11 @@ type FormattedComment = Tables<'comments'> & {
 
 const formatComment = (comment: Tables<'comments'>): FormattedComment => ({
   ...comment,
-  avatarUrl: `https://picsum.photos/seed/${comment.name}/40/40`,
+  avatarUrl: `https://picsum.photos/seed/${comment.name || 'user'}/40/40`,
   date: `${formatDistanceToNow(new Date(comment.created_at))} ago`,
 });
 
-export default function CommentSection({ blogId, slug }: { blogId: number; slug: string }) {
+export default function CommentSection({ blogId }: { blogId: number; }) {
   const [comments, setComments] = useState<FormattedComment[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -98,7 +98,7 @@ export default function CommentSection({ blogId, slug }: { blogId: number; slug:
 
       <Separator className="my-12" />
 
-      <AiSuggester slug={slug} blogId={blogId} onCommentPosted={handleCommentPosted} />
+      <AiSuggester blogId={blogId} onCommentPosted={handleCommentPosted} />
     </>
   );
 }

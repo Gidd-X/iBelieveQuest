@@ -23,7 +23,6 @@ export type Database = {
           id: number
           tags: string[] | null
           title: string | null
-          slug: string | null
           excerpt: string | null
         }
         Insert: {
@@ -34,7 +33,6 @@ export type Database = {
           id?: number
           tags?: string[] | null
           title?: string | null
-          slug?: string | null
           excerpt?: string | null
         }
         Update: {
@@ -45,7 +43,6 @@ export type Database = {
           id?: number
           tags?: string[] | null
           title?: string | null
-          slug?: string | null
           excerpt?: string | null
         }
         Relationships: []

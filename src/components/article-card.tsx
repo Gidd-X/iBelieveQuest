@@ -17,7 +17,7 @@ type ArticleCardProps = {
 
 export default function ArticleCard({ article }: ArticleCardProps) {
   return (
-    <Link href={`/posts/${article.slug}`} className="group block">
+    <Link href={`/posts/${article.id}`} className="group block">
       <Card className="flex h-full flex-col overflow-hidden shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
         <CardHeader className="p-0">
           <div className="relative h-48 w-full">

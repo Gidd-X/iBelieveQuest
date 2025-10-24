@@ -10,7 +10,6 @@ export type Comment = {
 
 export type Article = {
   id: string;
-  slug: string;
   title: string;
   author: string;
   authorAvatarUrl: string;

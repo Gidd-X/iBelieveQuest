@@ -12,7 +12,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import type { Tables } from '@/lib/supabase.type';
 
 
-export default function AiSuggester({ slug, blogId, onCommentPosted }: { slug: string, blogId: number, onCommentPosted: (comment: Tables<'comments'>) => void }) {
+export default function AiSuggester({ blogId, onCommentPosted }: { blogId: number, onCommentPosted: (comment: Tables<'comments'>) => void }) {
   const [name, setName] = useState('');
   const [text, setText] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);

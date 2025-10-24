@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { getArticleBySlug, getAllArticleSlugs } from '@/app/actions';
+import { getArticleById, getAllArticleIds } from '@/app/actions';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
@@ -9,12 +9,12 @@ import CommentSection from '@/components/comment-section';
 
 type ArticlePageProps = {
   params: {
-    slug: string;
+    id: string;
   };
 };
 
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
-  const article = await getArticleBySlug(params.slug);
+  const article = await getArticleById(parseInt(params.id, 10));
   if (!article) {
     return {
       title: 'Not Found'
@@ -28,12 +28,16 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
 }
 
 export async function generateStaticParams() {
-  const slugs = await getAllArticleSlugs();
-  return slugs;
+  const ids = await getAllArticleIds();
+  return ids;
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
-  const article = await getArticleBySlug(params.slug);
+  const articleId = parseInt(params.id, 10);
+  if (isNaN(articleId)) {
+    notFound();
+  }
+  const article = await getArticleById(articleId);
 
   if (!article) {
     notFound();
@@ -81,7 +85,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       
       <Separator className="my-12" />
 
-      <CommentSection blogId={parseInt(article.id, 10)} slug={params.slug} />
+      <CommentSection blogId={parseInt(article.id, 10)} />
 
     </article>
   );

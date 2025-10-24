@@ -17,7 +17,6 @@ const mapBlogToArticle = (blog: Tables<'Blogs'>): Article => {
   
   return {
     id: blog.id.toString(),
-    slug: blog.slug || blog.id.toString(),
     title: blog.title || 'Untitled',
     author: blog.author || 'Anonymous',
     authorAvatarUrl: `https://picsum.photos/seed/${blog.author || 'anon'}/40/40`,
@@ -60,31 +59,31 @@ export async function getArticles({ page = 1 }: { page: number }): Promise<{ art
   return { articles, hasMore, totalPages };
 }
 
-export async function getArticleBySlug(slug: string): Promise<Article | null> {
+export async function getArticleById(id: number): Promise<Article | null> {
     const supabase = createServerClient();
     const { data, error } = await supabase
         .from('Blogs')
         .select('*')
-        .eq('slug', slug)
+        .eq('id', id)
         .single();
 
     if (error || !data) {
-        console.error('Error fetching article by slug:', error);
+        console.error('Error fetching article by id:', error);
         return null;
     }
 
     return mapBlogToArticle(data);
 }
 
-export async function getAllArticleSlugs(): Promise<{ slug: string }[]> {
+export async function getAllArticleIds(): Promise<{ id: string }[]> {
     const supabase = createServerClient();
-    const { data, error } = await supabase.from('Blogs').select('slug');
+    const { data, error } = await supabase.from('Blogs').select('id');
 
     if (error) {
-        console.error('Error fetching slugs:', error);
+        console.error('Error fetching ids:', error);
         return [];
     }
-    return data.filter(item => item.slug).map(item => ({ slug: item.slug! }));
+    return data.map(item => ({ id: item.id.toString() }));
 }
 
 
