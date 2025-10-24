@@ -3,26 +3,32 @@
     {
       "id": "article-1",
       "description": "A winding path through a forest.",
-      "imageUrl": "https://picsum.photos/seed/101/1200/800",
+      "imageUrl": "https://images.unsplash.com/photo-1636412069653-c2a2a67e04af?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxwYXRoJTIwZm9yZXN0fGVufDB8fHx8MTc2MTMyMTgwMXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "path forest"
     },
     {
       "id": "article-2",
       "description": "An open book on a table.",
-      "imageUrl": "https://picsum.photos/seed/102/1200/800",
+      "imageUrl": "https://images.unsplash.com/photo-1591195852468-03a01d1375d6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxvcGVuJTIwYm9va3xlbnwwfHx8fDE3NjEzMDcwMjh8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "open book"
     },
     {
       "id": "article-3",
       "description": "Stars in the night sky.",
-      "imageUrl": "https://picsum.photos/seed/103/1200/800",
+      "imageUrl": "https://images.unsplash.com/photo-1528353518104-dbd48bee7bc4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxuaWdodCUyMHNreXxlbnwwfHx8fDE3NjEyNDE1NjR8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "night sky"
     },
     {
       "id": "about-us-hero",
       "description": "A person looking out over a misty mountain range at sunrise.",
-      "imageUrl": "https://picsum.photos/seed/104/1600/900",
+      "imageUrl": "https://images.unsplash.com/photo-1504252060324-1c76e2e09939?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtaXN0eSUyMG1vdW50YWluc3xlbnwwfHx8fDE3NjEzMTg1OTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "misty mountains"
+    },
+    {
+      "id": "fallback",
+      "description": "A generic placeholder image.",
+      "imageUrl": "https://images.unsplash.com/photo-1532630571098-79a3d222b00d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwbGFjZWhvbGRlcnxlbnwwfHx8fDE3NjEyMjg2MDd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "placeholder"
     }
   ]
 }
