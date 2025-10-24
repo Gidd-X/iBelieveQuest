@@ -4,8 +4,17 @@ import ArticleCard from '@/components/article-card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 
-export default async function Home({ searchParams }: { searchParams: { page?: string }}) {
-  const page = Number(searchParams.page) || 1;
+interface HomePageProps {
+  searchParams: Promise<{ page?: string }>;
+}
+
+/**
+ * Home page component
+ * Displays paginated list of blog articles
+ */
+export default async function Home({ searchParams }: HomePageProps): Promise<JSX.Element> {
+  const { page: pageParam } = await searchParams;
+  const page = Number(pageParam) || 1;
   const { articles, hasMore, totalPages } = await getArticles({ page });
 
   return (

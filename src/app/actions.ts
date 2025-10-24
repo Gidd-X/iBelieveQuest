@@ -5,16 +5,21 @@ import { createServerClient } from '@/lib/supabase/server';
 import type { Tables } from '@/lib/supabase.type';
 import { revalidatePath } from 'next/cache';
 import type { Article } from '@/lib/data';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 const COMMENTS_PER_PAGE = 5;
 const ARTICLES_PER_PAGE = 6;
 
-// Helper to map Supabase blog row to Article type
+/**
+ * Default fallback image for blog posts without a cover photo
+ */
+const DEFAULT_COVER_PHOTO = 'https://images.unsplash.com/photo-1532630571098-79a3d222b00d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwbGFjZWhvbGRlcnxlbnwwfHx8fDE3NjEyMjg2MDd8MA&ixlib=rb-4.1.0&q=80&w=1080';
+
+/**
+ * Maps a Supabase blog row to the Article type for UI display
+ * @param blog - Blog row from Supabase
+ * @returns Formatted article for display
+ */
 const mapBlogToArticle = (blog: Tables<'Blogs'>): Article => {
-  const imageId = `article-${blog.id}`;
-  const image = PlaceHolderImages.find(p => p.id === imageId) || PlaceHolderImages.find(p => p.id === 'fallback')!;
-  
   return {
     id: blog.id.toString(),
     title: blog.title || 'Untitled',
@@ -28,14 +33,16 @@ const mapBlogToArticle = (blog: Tables<'Blogs'>): Article => {
     excerpt: blog.excerpt || '',
     content: blog.content || '',
     tags: blog.tags || [],
-    image: {
-      ...image,
-      imageUrl: blog.cover_photo || image.imageUrl,
-    },
+    coverPhoto: blog.cover_photo || DEFAULT_COVER_PHOTO,
     comments: [],
   };
 };
 
+/**
+ * Fetches paginated blog articles from Supabase
+ * @param page - Page number (1-indexed)
+ * @returns Object containing articles array, hasMore flag, and total pages
+ */
 export async function getArticles({ page = 1 }: { page: number }): Promise<{ articles: Article[], hasMore: boolean, totalPages: number }> {
   const supabase = createServerClient();
   const from = (page - 1) * ARTICLES_PER_PAGE;
@@ -59,6 +66,11 @@ export async function getArticles({ page = 1 }: { page: number }): Promise<{ art
   return { articles, hasMore, totalPages };
 }
 
+/**
+ * Fetches a single blog article by ID
+ * @param id - Numeric blog ID
+ * @returns Article object or null if not found
+ */
 export async function getArticleById(id: number): Promise<Article | null> {
     const supabase = createServerClient();
     const { data, error } = await supabase
@@ -75,6 +87,10 @@ export async function getArticleById(id: number): Promise<Article | null> {
     return mapBlogToArticle(data);
 }
 
+/**
+ * Fetches all blog IDs for static site generation
+ * @returns Array of objects containing blog IDs as strings
+ */
 export async function getAllArticleIds(): Promise<{ id: string }[]> {
     const supabase = createServerClient();
     const { data, error } = await supabase.from('Blogs').select('id');
@@ -83,10 +99,15 @@ export async function getAllArticleIds(): Promise<{ id: string }[]> {
         console.error('Error fetching ids:', error);
         return [];
     }
-    return data.map(item => ({ id: item.id.toString() }));
+    return data.map((item) => ({ id: item.id.toString() }));
 }
 
 
+/**
+ * Gets AI-powered religious passage suggestions based on input text
+ * @param text - User input text to analyze
+ * @returns Suggestions object or error object
+ */
 export async function getPassageSuggestions(text: string): Promise<SuggestReligiousPassagesOutput | { error: string }> {
   if (!text || text.trim().length < 10) {
     return { error: 'Please enter more text to get suggestions.' };
@@ -101,6 +122,13 @@ export async function getPassageSuggestions(text: string): Promise<SuggestReligi
   }
 }
 
+/**
+ * Posts a new comment to a blog post
+ * @param blog_id - ID of the blog post
+ * @param name - Commenter's name
+ * @param text - Comment text
+ * @returns Object with comment data or error message
+ */
 export async function postComment(blog_id: number, name: string, text: string): Promise<{ data: Tables<'comments'> | null, error: string | null }> {
   if (!name || name.trim().length === 0) {
     return { data: null, error: 'Please enter your name.' };
@@ -124,11 +152,15 @@ export async function postComment(blog_id: number, name: string, text: string): 
     return { data: null, error: 'Failed to post comment. Please try again later.' };
   }
   
-  // Instead of revalidating the whole path, we will return the new comment
-  // and the client will add it to the state.
   return { data, error: null };
 }
 
+/**
+ * Fetches paginated comments for a blog post
+ * @param blogId - ID of the blog post
+ * @param page - Page number (1-indexed)
+ * @returns Object containing comments array and hasMore flag
+ */
 export async function getComments({ blogId, page = 1 }: { blogId: number, page: number }): Promise<{ comments: Tables<'comments'>[], hasMore: boolean }> {
   const supabase = createServerClient();
   const from = (page - 1) * COMMENTS_PER_PAGE;

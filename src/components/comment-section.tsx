@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -16,19 +15,32 @@ type FormattedComment = Tables<'comments'> & {
   date: string;
 };
 
+/**
+ * Formats a comment from the database for display
+ * @param comment - Raw comment from database
+ * @returns Formatted comment with avatar URL and relative date
+ */
 const formatComment = (comment: Tables<'comments'>): FormattedComment => ({
   ...comment,
   avatarUrl: `https://picsum.photos/seed/${comment.name || 'user'}/40/40`,
   date: `${formatDistanceToNow(new Date(comment.created_at))} ago`,
 });
 
-export default function CommentSection({ blogId }: { blogId: number; }) {
+interface CommentSectionProps {
+  blogId: number;
+}
+
+/**
+ * CommentSection component
+ * Displays paginated comments for a blog post with AI suggester for new comments
+ */
+export default function CommentSection({ blogId }: CommentSectionProps): JSX.Element {
   const [comments, setComments] = useState<FormattedComment[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isFetching, setIsFetching] = useState(true);
   
-  const fetchAndSetComments = async (pageNum: number) => {
+  const fetchAndSetComments = async (pageNum: number): Promise<void> => {
     setIsFetching(true);
     const { comments: newComments, hasMore: newHasMore } = await getComments({ blogId, page: pageNum });
     const formatted = newComments.map(formatComment);
@@ -41,13 +53,13 @@ export default function CommentSection({ blogId }: { blogId: number; }) {
     fetchAndSetComments(1);
   }, [blogId]);
 
-  const handleLoadMore = () => {
+  const handleLoadMore = (): void => {
     const nextPage = page + 1;
     setPage(nextPage);
     fetchAndSetComments(nextPage);
   };
 
-  const handleCommentPosted = (newComment: Tables<'comments'>) => {
+  const handleCommentPosted = (newComment: Tables<'comments'>): void => {
     setComments(prev => [formatComment(newComment), ...prev]);
   };
 

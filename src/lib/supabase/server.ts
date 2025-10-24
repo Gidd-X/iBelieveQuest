@@ -2,10 +2,15 @@ import { createServerClient as createSupabaseServerClient, type CookieOptions } 
 import { cookies } from 'next/headers'
 import type { Database } from '@/lib/supabase.type'
 
-export function createServerClient() {
+/**
+ * Creates a Supabase client for use in server components and server actions
+ * Handles cookie-based authentication
+ * @returns Configured Supabase server client with type safety
+ */
+export async function createServerClient() {
   let cookieStore;
   try {
-    cookieStore = cookies()
+    cookieStore = await cookies()
   } catch (error) {
     // cookies() will throw if called outside a request scope.
     // In this case, we can proceed without a cookie store.

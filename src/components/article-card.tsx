@@ -15,19 +15,22 @@ type ArticleCardProps = {
   article: Article;
 };
 
-export default function ArticleCard({ article }: ArticleCardProps) {
+/**
+ * ArticleCard component displays a blog article in card format
+ * Used on the homepage and article listing pages
+ */
+export default function ArticleCard({ article }: ArticleCardProps): JSX.Element {
   return (
     <Link href={`/posts/${article.id}`} className="group block">
       <Card className="flex h-full flex-col overflow-hidden shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
         <CardHeader className="p-0">
           <div className="relative h-48 w-full">
             <Image
-              src={article.image.imageUrl}
-              alt={article.image.description}
+              src={article.coverPhoto || '/placeholder-blog.jpg'}
+              alt={article.title}
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               className="object-cover"
-              data-ai-hint={article.image.imageHint}
             />
           </div>
         </CardHeader>
