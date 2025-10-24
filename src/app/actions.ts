@@ -2,6 +2,7 @@
 
 import { suggestReligiousPassages, type SuggestReligiousPassagesOutput } from '@/ai/flows/suggest-religious-passages';
 import { createServerClient } from '@/lib/supabase/server';
+import { createBuildTimeClient } from '@/lib/supabase/build-time';
 import type { Tables, TablesInsert } from '@/lib/supabase.type';
 import { revalidatePath } from 'next/cache';
 import type { Article } from '@/lib/data';
@@ -89,17 +90,25 @@ export async function getArticleById(id: number): Promise<Article | null> {
 
 /**
  * Fetches all blog IDs for static site generation
+ * Uses build-time client to avoid cookie access during build
  * @returns Array of objects containing blog IDs as strings
  */
 export async function getAllArticleIds(): Promise<{ id: string }[]> {
-    const supabase = await createServerClient();
-    const { data, error } = await supabase.from('Blogs').select('id');
+    try {
+        const supabase = createBuildTimeClient();
+        const { data, error } = await supabase.from('Blogs').select('id');
 
-    if (error) {
-        console.error('Error fetching ids:', error);
+        if (error) {
+            console.error('Error fetching ids:', error);
+            return [];
+        }
+        return data.map((item: { id: number }) => ({ id: item.id.toString() }));
+    } catch (error) {
+        console.error('Error creating Supabase client or fetching IDs:', error);
+        // Return empty array if environment variables aren't available or other error occurs
+        // This allows the build to continue without static generation
         return [];
     }
-    return data.map((item: { id: number }) => ({ id: item.id.toString() }));
 }
 
 
