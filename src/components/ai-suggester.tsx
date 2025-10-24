@@ -11,8 +11,18 @@ import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import type { Tables } from '@/lib/supabase.type';
 
+interface AiSuggesterProps {
+  blogId: number;
+  onCommentPosted: (comment: Tables<'comments'>) => void;
+}
 
-export default function AiSuggester({ blogId, onCommentPosted }: { blogId: number, onCommentPosted: (comment: Tables<'comments'>) => void }) {
+/**
+ * AiSuggester component
+ * Allows users to post comments and get AI-powered religious passage suggestions
+ * @param blogId - ID of the blog post
+ * @param onCommentPosted - Callback when a comment is successfully posted
+ */
+export default function AiSuggester({ blogId, onCommentPosted }: AiSuggesterProps): JSX.Element {
   const [name, setName] = useState('');
   const [text, setText] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -21,7 +31,7 @@ export default function AiSuggester({ blogId, onCommentPosted }: { blogId: numbe
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const handleGetSuggestions = async () => {
+  const handleGetSuggestions = async (): Promise<void> => {
     setIsGettingSuggestions(true);
     setError(null);
     setSuggestions([]);
@@ -41,7 +51,7 @@ export default function AiSuggester({ blogId, onCommentPosted }: { blogId: numbe
     setIsGettingSuggestions(false);
   };
   
-  const handlePostComment = async () => {
+  const handlePostComment = async (): Promise<void> => {
     startPostingComment(async () => {
       setError(null);
       const { data: newComment, error: postError } = await postComment(blogId, name, text);

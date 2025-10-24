@@ -8,13 +8,17 @@ import type { Metadata } from 'next';
 import CommentSection from '@/components/comment-section';
 
 type ArticlePageProps = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
+/**
+ * Generates metadata for the article page
+ */
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
-  const article = await getArticleById(parseInt(params.id, 10));
+  const { id } = await params;
+  const article = await getArticleById(parseInt(id, 10));
   if (!article) {
     return {
       title: 'Not Found'
@@ -27,16 +31,26 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   }
 }
 
-export async function generateStaticParams() {
+/**
+ * Generates static paths for all articles
+ */
+export async function generateStaticParams(): Promise<{ id: string }[]> {
   const ids = await getAllArticleIds();
   return ids;
 }
 
-export default async function ArticlePage({ params }: ArticlePageProps) {
-  const articleId = parseInt(params.id, 10);
+/**
+ * Article detail page component
+ * Displays full article content with comments section
+ */
+export default async function ArticlePage({ params }: ArticlePageProps): Promise<JSX.Element> {
+  const { id } = await params;
+  const articleId = parseInt(id, 10);
+  
   if (isNaN(articleId)) {
     notFound();
   }
+  
   const article = await getArticleById(articleId);
 
   if (!article) {
@@ -67,16 +81,17 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         </div>
       </div>
 
-      <div className="relative mb-8 h-64 w-full overflow-hidden rounded-lg shadow-lg md:h-96">
-        <Image
-          src={article.image.imageUrl}
-          alt={article.image.description}
-          fill
-          className="object-cover"
-          priority
-          data-ai-hint={article.image.imageHint}
-        />
-      </div>
+      {article.coverPhoto && (
+        <div className="relative mb-8 h-64 w-full overflow-hidden rounded-lg shadow-lg md:h-96">
+          <Image
+            src={article.coverPhoto}
+            alt={article.title}
+            fill
+            className="object-cover"
+            priority
+          />
+        </div>
+      )}
 
       <div
         className="space-y-6 text-lg leading-relaxed text-foreground/90 [&_p]:mb-4"

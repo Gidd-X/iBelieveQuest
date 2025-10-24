@@ -3,7 +3,11 @@ import { Input } from '@/components/ui/input';
 import { Facebook, Send as TelegramIcon } from 'lucide-react';
 import Link from 'next/link';
 
-export default function Footer() {
+/**
+ * Footer component
+ * Site footer with newsletter subscription form
+ */
+export default function Footer(): JSX.Element {
   return (
     <footer className="mt-12 border-t bg-card">
       <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">

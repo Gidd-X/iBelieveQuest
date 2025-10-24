@@ -3,7 +3,11 @@ import Image from 'next/image';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 
-export default function Header() {
+/**
+ * Header component
+ * Main site navigation and branding
+ */
+export default function Header(): JSX.Element {
   return (
     <header className="bg-card shadow-sm">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -33,7 +37,6 @@ export default function Header() {
               <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
             </form>
           </div>
-          {/* A Sheet component could be added here for a mobile menu trigger */}
         </div>
       </div>
     </header>
