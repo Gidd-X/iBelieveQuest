@@ -1,5 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Facebook, Send as TelegramIcon } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Footer() {
   return (
@@ -12,7 +14,7 @@ export default function Footer() {
               One question, one truth, one step at a time.
             </p>
           </div>
-          <div className="md:col-span-2">
+          <div className="md:col-span-1">
             <h4 className="font-semibold">Subscribe to our newsletter</h4>
             <p className="mt-1 text-sm text-muted-foreground">
               Receive email notifications for new posts and updates.
@@ -28,6 +30,24 @@ export default function Footer() {
                 Subscribe
               </Button>
             </form>
+          </div>
+          <div className="md:col-span-1">
+            <h4 className="font-semibold">Follow Us</h4>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Join the conversation on our social channels.
+            </p>
+            <div className="mt-4 flex gap-4">
+              <Link href="https://www.facebook.com/share/19e9XdXBmQ/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                <Button variant="outline" size="icon">
+                  <Facebook className="h-5 w-5" />
+                </Button>
+              </Link>
+              <Link href="https://t.me/iBelieveQuest" target="_blank" rel="noopener noreferrer" aria-label="Telegram">
+                <Button variant="outline" size="icon">
+                  <TelegramIcon className="h-5 w-5" />
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
         <div className="mt-8 border-t pt-6 text-center text-sm text-muted-foreground">
