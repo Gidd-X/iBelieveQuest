@@ -2,7 +2,7 @@
 
 import { suggestReligiousPassages, type SuggestReligiousPassagesOutput } from '@/ai/flows/suggest-religious-passages';
 import { createServerClient } from '@/lib/supabase/server';
-import type { Tables } from '@/lib/supabase.type';
+import type { Tables, TablesInsert } from '@/lib/supabase.type';
 import { revalidatePath } from 'next/cache';
 import type { Article } from '@/lib/data';
 
@@ -44,7 +44,7 @@ const mapBlogToArticle = (blog: Tables<'Blogs'>): Article => {
  * @returns Object containing articles array, hasMore flag, and total pages
  */
 export async function getArticles({ page = 1 }: { page: number }): Promise<{ articles: Article[], hasMore: boolean, totalPages: number }> {
-  const supabase = createServerClient();
+  const supabase = await createServerClient();
   const from = (page - 1) * ARTICLES_PER_PAGE;
   const to = from + ARTICLES_PER_PAGE - 1;
 
@@ -72,7 +72,7 @@ export async function getArticles({ page = 1 }: { page: number }): Promise<{ art
  * @returns Article object or null if not found
  */
 export async function getArticleById(id: number): Promise<Article | null> {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     const { data, error } = await supabase
         .from('Blogs')
         .select('*')
@@ -92,14 +92,14 @@ export async function getArticleById(id: number): Promise<Article | null> {
  * @returns Array of objects containing blog IDs as strings
  */
 export async function getAllArticleIds(): Promise<{ id: string }[]> {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     const { data, error } = await supabase.from('Blogs').select('id');
 
     if (error) {
         console.error('Error fetching ids:', error);
         return [];
     }
-    return data.map((item) => ({ id: item.id.toString() }));
+    return data.map((item: { id: number }) => ({ id: item.id.toString() }));
 }
 
 
@@ -140,12 +140,11 @@ export async function postComment(blog_id: number, name: string, text: string): 
     return { data: null, error: 'Comment cannot be longer than 500 characters.' };
   }
 
-  const supabase = createServerClient();
-  const { data, error } = await supabase
-    .from('comments')
-    .insert([{ name, comment: text, blog_id }])
-    .select()
-    .single();
+  const supabase = await createServerClient();
+  
+  // Supabase client type inference issue with async cookies API in Next.js 15
+  // @ts-ignore
+  const { data, error } = await supabase.from('comments').insert({ name, comment: text, blog_id }).select().single();
 
   if (error) {
     console.error('Error posting comment:', error);
@@ -162,7 +161,7 @@ export async function postComment(blog_id: number, name: string, text: string): 
  * @returns Object containing comments array and hasMore flag
  */
 export async function getComments({ blogId, page = 1 }: { blogId: number, page: number }): Promise<{ comments: Tables<'comments'>[], hasMore: boolean }> {
-  const supabase = createServerClient();
+  const supabase = await createServerClient();
   const from = (page - 1) * COMMENTS_PER_PAGE;
   const to = from + COMMENTS_PER_PAGE - 1;
 

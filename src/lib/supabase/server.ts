@@ -8,14 +8,7 @@ import type { Database } from '@/lib/supabase.type'
  * @returns Configured Supabase server client with type safety
  */
 export async function createServerClient() {
-  let cookieStore;
-  try {
-    cookieStore = await cookies()
-  } catch (error) {
-    // cookies() will throw if called outside a request scope.
-    // In this case, we can proceed without a cookie store.
-    // This is safe for build-time operations like generateStaticParams.
-  }
+  const cookieStore = await cookies()
 
   return createSupabaseServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -23,11 +16,11 @@ export async function createServerClient() {
     {
       cookies: {
         get(name: string) {
-          return cookieStore?.get(name)?.value
+          return cookieStore.get(name)?.value
         },
         set(name: string, value: string, options: CookieOptions) {
           try {
-            cookieStore?.set({ name, value, ...options })
+            cookieStore.set({ name, value, ...options })
           } catch (error) {
             // The `set` method was called from a Server Component.
             // This can be ignored if you have middleware refreshing
@@ -36,7 +29,7 @@ export async function createServerClient() {
         },
         remove(name: string, options: CookieOptions) {
           try {
-            cookieStore?.set({ name, value: '', ...options })
+            cookieStore.set({ name, value: '', ...options })
           } catch (error) {
             // The `delete` method was called from a Server Component.
             // This can be ignored if you have middleware refreshing
