@@ -102,7 +102,8 @@ export async function getAllArticleIds(): Promise<{ id: string }[]> {
             console.error('Error fetching ids:', error);
             return [];
         }
-        return data.map((item: { id: number }) => ({ id: item.id.toString() }));
+        // Handle case where data could be null
+        return (data || []).map((item: { id: number }) => ({ id: item.id.toString() }));
     } catch (error) {
         console.error('Error creating Supabase client or fetching IDs:', error);
         // Return empty array if environment variables aren't available or other error occurs
