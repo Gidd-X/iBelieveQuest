@@ -5,6 +5,7 @@ import { createServerClient } from '@/lib/supabase/server';
 import { createBuildTimeClient } from '@/lib/supabase/build-time';
 import type { Tables, TablesInsert } from '@/lib/supabase.type';
 import { revalidatePath } from 'next/cache';
+<<<<<<< HEAD
 import type { Article } from '@/lib/data';
 import { PlaceHolderImages, type ImagePlaceholder } from '@/lib/placeholder-images';
 
@@ -117,6 +118,10 @@ export async function getAllArticleIds(): Promise<{ id: string }[]> {
     }
 }
 
+=======
+
+const COMMENTS_PER_PAGE = 5;
+>>>>>>> parent of b4e7531 (Fetch the blogs from supabase and use pagination)
 
 /**
  * Gets AI-powered religious passage suggestions based on input text

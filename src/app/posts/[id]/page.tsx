@@ -1,10 +1,15 @@
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
+<<<<<<< HEAD:src/app/posts/[id]/page.tsx
 import { getArticleById, getAllArticleIds } from '@/app/actions';
+=======
+import { articles, getArticleBySlug } from '@/lib/data';
+>>>>>>> parent of b4e7531 (Fetch the blogs from supabase and use pagination):src/app/posts/[slug]/page.tsx
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import type { Metadata } from 'next';
+import { createServerClient } from '@/lib/supabase/server';
 import CommentSection from '@/components/comment-section';
 
 // Allow dynamic params for articles not in generateStaticParams
@@ -20,8 +25,12 @@ type ArticlePageProps = {
  * Generates metadata for the article page
  */
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
+<<<<<<< HEAD:src/app/posts/[id]/page.tsx
   const { id } = await params;
   const article = await getArticleById(parseInt(id, 10));
+=======
+  const article = getArticleBySlug(params.slug);
+>>>>>>> parent of b4e7531 (Fetch the blogs from supabase and use pagination):src/app/posts/[slug]/page.tsx
   if (!article) {
     return {
       title: 'Not Found'
@@ -34,6 +43,7 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   }
 }
 
+<<<<<<< HEAD:src/app/posts/[id]/page.tsx
 /**
  * Generates static paths for all articles
  */
@@ -55,6 +65,16 @@ export default async function ArticlePage({ params }: ArticlePageProps): Promise
   }
   
   const article = await getArticleById(articleId);
+=======
+export async function generateStaticParams() {
+  return articles.map((article) => ({
+    slug: article.slug,
+  }));
+}
+
+export default async function ArticlePage({ params }: ArticlePageProps) {
+  const article = getArticleBySlug(params.slug);
+>>>>>>> parent of b4e7531 (Fetch the blogs from supabase and use pagination):src/app/posts/[slug]/page.tsx
 
   if (!article) {
     notFound();

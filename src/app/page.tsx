@@ -1,6 +1,6 @@
-import Link from 'next/link';
-import { getArticles } from '@/app/actions';
+import { articles } from '@/lib/data';
 import ArticleCard from '@/components/article-card';
+<<<<<<< HEAD
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 
@@ -16,7 +16,10 @@ export default async function Home({ searchParams }: HomePageProps): Promise<JSX
   const { page: pageParam } = await searchParams;
   const page = Number(pageParam) || 1;
   const { articles, hasMore, totalPages } = await getArticles({ page });
+=======
+>>>>>>> parent of b4e7531 (Fetch the blogs from supabase and use pagination)
 
+export default function Home() {
   return (
     <div className="space-y-12">
       <div className="text-center">
@@ -26,37 +29,11 @@ export default async function Home({ searchParams }: HomePageProps): Promise<JSX
         </p>
       </div>
       
-      {articles.length > 0 ? (
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {articles.map((article) => (
-            <ArticleCard key={article.id} article={article} />
-          ))}
-        </div>
-      ) : (
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">No articles found. Check back later!</p>
-        </div>
-      )}
-
-      {articles.length > 0 && totalPages > 1 && (
-        <div className="flex justify-center items-center gap-4">
-          <Button asChild variant="outline" disabled={page <= 1}>
-            <Link href={page > 1 ? `/?page=${page - 1}` : '#'}>
-              <ArrowLeft className="mr-2" />
-              Previous
-            </Link>
-          </Button>
-          <span className="text-sm text-muted-foreground">
-            Page {page} of {totalPages}
-          </span>
-          <Button asChild variant="outline" disabled={!hasMore}>
-            <Link href={hasMore ? `/?page=${page + 1}` : '#'}>
-              Next
-              <ArrowRight className="ml-2" />
-            </Link>
-          </Button>
-        </div>
-      )}
+      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        {articles.map((article) => (
+          <ArticleCard key={article.id} article={article} />
+        ))}
+      </div>
     </div>
   );
 }
