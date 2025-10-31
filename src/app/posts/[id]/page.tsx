@@ -1,7 +1,11 @@
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 <<<<<<< HEAD:src/app/posts/[id]/page.tsx
+<<<<<<< HEAD:src/app/posts/[id]/page.tsx
 import { getArticleById, getAllArticleIds } from '@/app/actions';
+=======
+import { articles, getArticleBySlug } from '@/lib/data';
+>>>>>>> parent of b4e7531 (Fetch the blogs from supabase and use pagination):src/app/posts/[slug]/page.tsx
 =======
 import { articles, getArticleBySlug } from '@/lib/data';
 >>>>>>> parent of b4e7531 (Fetch the blogs from supabase and use pagination):src/app/posts/[slug]/page.tsx
@@ -26,8 +30,12 @@ type ArticlePageProps = {
  */
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
 <<<<<<< HEAD:src/app/posts/[id]/page.tsx
+<<<<<<< HEAD:src/app/posts/[id]/page.tsx
   const { id } = await params;
   const article = await getArticleById(parseInt(id, 10));
+=======
+  const article = getArticleBySlug(params.slug);
+>>>>>>> parent of b4e7531 (Fetch the blogs from supabase and use pagination):src/app/posts/[slug]/page.tsx
 =======
   const article = getArticleBySlug(params.slug);
 >>>>>>> parent of b4e7531 (Fetch the blogs from supabase and use pagination):src/app/posts/[slug]/page.tsx
@@ -74,6 +82,9 @@ export async function generateStaticParams() {
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const article = getArticleBySlug(params.slug);
+<<<<<<< HEAD:src/app/posts/[id]/page.tsx
+>>>>>>> parent of b4e7531 (Fetch the blogs from supabase and use pagination):src/app/posts/[slug]/page.tsx
+=======
 >>>>>>> parent of b4e7531 (Fetch the blogs from supabase and use pagination):src/app/posts/[slug]/page.tsx
 
   if (!article) {

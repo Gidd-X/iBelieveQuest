@@ -1,6 +1,7 @@
 import { articles } from '@/lib/data';
 import ArticleCard from '@/components/article-card';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 
@@ -19,6 +20,9 @@ export default async function Home({ searchParams }: HomePageProps): Promise<JSX
 =======
 >>>>>>> parent of b4e7531 (Fetch the blogs from supabase and use pagination)
 
+=======
+
+>>>>>>> parent of b4e7531 (Fetch the blogs from supabase and use pagination)
 export default function Home() {
   return (
     <div className="space-y-12">

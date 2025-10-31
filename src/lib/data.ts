@@ -31,8 +31,13 @@ export type Article = {
   content: string;
   tags: string[];
 <<<<<<< HEAD
+<<<<<<< HEAD
   coverPhoto: ImagePlaceholder;
   comments: Comment[];
+=======
+  image: ImagePlaceholder;
+  comments: Comment[]; // This will now be populated from Supabase, but we can keep the structure
+>>>>>>> parent of b4e7531 (Fetch the blogs from supabase and use pagination)
 =======
   image: ImagePlaceholder;
   comments: Comment[]; // This will now be populated from Supabase, but we can keep the structure

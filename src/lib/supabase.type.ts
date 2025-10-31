@@ -24,7 +24,10 @@ export type Database = {
           tags: string[] | null
           title: string | null
 <<<<<<< HEAD
+<<<<<<< HEAD
           excerpt: string | null
+=======
+>>>>>>> parent of b4e7531 (Fetch the blogs from supabase and use pagination)
 =======
 >>>>>>> parent of b4e7531 (Fetch the blogs from supabase and use pagination)
         }
@@ -37,7 +40,10 @@ export type Database = {
           tags?: string[] | null
           title?: string | null
 <<<<<<< HEAD
+<<<<<<< HEAD
           excerpt?: string | null
+=======
+>>>>>>> parent of b4e7531 (Fetch the blogs from supabase and use pagination)
 =======
 >>>>>>> parent of b4e7531 (Fetch the blogs from supabase and use pagination)
         }
@@ -50,7 +56,10 @@ export type Database = {
           tags?: string[] | null
           title?: string | null
 <<<<<<< HEAD
+<<<<<<< HEAD
           excerpt?: string | null
+=======
+>>>>>>> parent of b4e7531 (Fetch the blogs from supabase and use pagination)
 =======
 >>>>>>> parent of b4e7531 (Fetch the blogs from supabase and use pagination)
         }
