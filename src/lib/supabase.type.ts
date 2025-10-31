@@ -23,13 +23,7 @@ export type Database = {
           id: number
           tags: string[] | null
           title: string | null
-<<<<<<< HEAD
-<<<<<<< HEAD
           excerpt: string | null
-=======
->>>>>>> parent of b4e7531 (Fetch the blogs from supabase and use pagination)
-=======
->>>>>>> parent of b4e7531 (Fetch the blogs from supabase and use pagination)
         }
         Insert: {
           author?: string | null
@@ -39,13 +33,7 @@ export type Database = {
           id?: number
           tags?: string[] | null
           title?: string | null
-<<<<<<< HEAD
-<<<<<<< HEAD
           excerpt?: string | null
-=======
->>>>>>> parent of b4e7531 (Fetch the blogs from supabase and use pagination)
-=======
->>>>>>> parent of b4e7531 (Fetch the blogs from supabase and use pagination)
         }
         Update: {
           author?: string | null
@@ -55,13 +43,7 @@ export type Database = {
           id?: number
           tags?: string[] | null
           title?: string | null
-<<<<<<< HEAD
-<<<<<<< HEAD
           excerpt?: string | null
-=======
->>>>>>> parent of b4e7531 (Fetch the blogs from supabase and use pagination)
-=======
->>>>>>> parent of b4e7531 (Fetch the blogs from supabase and use pagination)
         }
         Relationships: []
       }
