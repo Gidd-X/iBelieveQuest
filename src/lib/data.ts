@@ -1,3 +1,5 @@
+import type { ImagePlaceholder } from './placeholder-images';
+
 /**
  * Type definitions for blog articles and comments
  * These types are used for displaying blog data in the UI
@@ -27,6 +29,6 @@ export type Article = {
   excerpt: string;
   content: string;
   tags: string[];
-  coverPhoto: string | null;
+  coverPhoto: ImagePlaceholder;
   comments: Comment[];
 };

@@ -84,17 +84,15 @@ export default async function ArticlePage({ params }: ArticlePageProps): Promise
         </div>
       </div>
 
-      {article.coverPhoto && (
-        <div className="relative mb-8 h-64 w-full overflow-hidden rounded-lg shadow-lg md:h-96">
-          <Image
-            src={article.coverPhoto}
-            alt={article.title}
-            fill
-            className="object-cover"
-            priority
-          />
-        </div>
-      )}
+      <div className="relative mb-8 h-64 w-full overflow-hidden rounded-lg shadow-lg md:h-96">
+        <Image
+          src={article.coverPhoto.src}
+          alt={article.coverPhoto.alt}
+          fill
+          className="object-cover"
+          priority
+        />
+      </div>
 
       <div
         className="space-y-6 text-lg leading-relaxed text-foreground/90 [&_p]:mb-4"

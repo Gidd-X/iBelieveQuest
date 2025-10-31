@@ -6,6 +6,7 @@ import { createBuildTimeClient } from '@/lib/supabase/build-time';
 import type { Tables, TablesInsert } from '@/lib/supabase.type';
 import { revalidatePath } from 'next/cache';
 import type { Article } from '@/lib/data';
+import { PlaceHolderImages, type ImagePlaceholder } from '@/lib/placeholder-images';
 
 const COMMENTS_PER_PAGE = 5;
 const ARTICLES_PER_PAGE = 6;
@@ -13,7 +14,7 @@ const ARTICLES_PER_PAGE = 6;
 /**
  * Default fallback image for blog posts without a cover photo
  */
-const DEFAULT_COVER_PHOTO = 'https://images.unsplash.com/photo-1532630571098-79a3d222b00d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwbGFjZWhvbGRlcnxlbnwwfHx8fDE3NjEyMjg2MDd8MA&ixlib=rb-4.1.0&q=80&w=1080';
+const DEFAULT_COVER_PHOTO = PlaceHolderImages.find(p => p.id === 'fallback')!;
 
 /**
  * Maps a Supabase blog row to the Article type for UI display
@@ -21,6 +22,10 @@ const DEFAULT_COVER_PHOTO = 'https://images.unsplash.com/photo-1532630571098-79a
  * @returns Formatted article for display
  */
 const mapBlogToArticle = (blog: Tables<'Blogs'>): Article => {
+  const coverPhoto: ImagePlaceholder = blog.cover_photo
+    ? { id: blog.id.toString(), src: blog.cover_photo, alt: blog.title || 'Blog post cover' }
+    : DEFAULT_COVER_PHOTO;
+
   return {
     id: blog.id.toString(),
     title: blog.title || 'Untitled',
@@ -34,7 +39,7 @@ const mapBlogToArticle = (blog: Tables<'Blogs'>): Article => {
     excerpt: blog.excerpt || '',
     content: blog.content || '',
     tags: blog.tags || [],
-    coverPhoto: blog.cover_photo || DEFAULT_COVER_PHOTO,
+    coverPhoto: coverPhoto,
     comments: [],
   };
 };

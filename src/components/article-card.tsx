@@ -26,8 +26,8 @@ export default function ArticleCard({ article }: ArticleCardProps): JSX.Element 
         <CardHeader className="p-0">
           <div className="relative h-48 w-full">
             <Image
-              src={article.coverPhoto || '/placeholder-blog.jpg'}
-              alt={article.title}
+              src={article.coverPhoto.src}
+              alt={article.coverPhoto.alt}
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               className="object-cover"
