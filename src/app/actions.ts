@@ -194,3 +194,29 @@ export async function getComments({ blogId, page = 1 }: { blogId: number, page: 
 
   return { comments: comments || [], hasMore };
 }
+
+/**
+ * Subscribes a user to the newsletter.
+ * @param email The user's email address.
+ * @returns An object with a success or error message.
+ */
+export async function subscribeToNewsletter(
+  email: string
+): Promise<{ success?: string; error?: string }> {
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return { error: 'Please enter a valid email address.' };
+  }
+
+  const supabase = await createServerClient();
+  const { error } = await supabase.from('subscribers').insert({ email });
+
+  if (error) {
+    if (error.code === '23505') { // Unique constraint violation
+      return { error: 'This email is already subscribed.' };
+    }
+    console.error('Error subscribing to newsletter:', error);
+    return { error: 'Could not subscribe. Please try again later.' };
+  }
+
+  return { success: 'Thank you for subscribing!' };
+}
