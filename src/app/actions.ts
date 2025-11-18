@@ -208,7 +208,9 @@ export async function subscribeToNewsletter(
   }
 
   const supabase = await createServerClient();
-  const { error } = await supabase.from('subscribers').insert({ email });
+  // Quick TS workaround: cast the Supabase client to any so the insert call bypasses strict typing
+  // (Long-term: ensure Database types are wired into the Supabase client generics.)
+  const { error } = await (supabase as any).from('subscribers').insert({ email });
 
   if (error) {
     if (error.code === '23505') { // Unique constraint violation
