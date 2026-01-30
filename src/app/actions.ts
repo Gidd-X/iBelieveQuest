@@ -228,11 +228,20 @@ export async function subscribeToNewsletter(
     const { data: emailData, error: resendError } = await resend.emails.send({
       from: 'iBelieveQuest <contact@ibelievequest.com>', // Update this if you have a custom domain
       to: email,
-      subject: 'Welcome to iBelieveQuest!',
+      subject: 'Welcome to iBelieve Quest!',
       html: `
-        <h1>Welcome to iBelieveQuest!</h1>
-        <p>Thank you for subscribing to our newsletter. We're excited to have you on board🤗.</p>
+        <h1>Welcome to iBelieve Quest!</h1>
+        <img src="https://res.cloudinary.com/drcgnqg8m/image/upload/v1762079061/iBQ_vspudo.jpg" alt="iBelieveQuest" />
+        <p>Thanks for subscribing to iBelieve Quest. I am super excited to have you here 😊.</p>
+        <p>This is a space for honest faith and thoughtful questions. We do not rush to easy answers or avoid the hard ones. Instead, we explore belief with curiosity, clarity, and care.</p>
+        <p>By joining, you are stepping into a journey.  One question, one truth, one step at a time.</p>
+        <p>I am excited to share deeper, clearer insights with you.</p>
+        <p>Once again, welcome to the iBelieve Quest.</p>
         <p>Stay tuned for more interesting updates!</p>
+       <br />
+        <p>Warmly,</p>
+        <p>Archie</p>
+        <p>iBelieve Quest.</p>
       `,
     });
 

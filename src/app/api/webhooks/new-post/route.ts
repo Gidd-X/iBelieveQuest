@@ -50,11 +50,13 @@ export async function POST(req: NextRequest) {
                     to: sub.email,
                     subject: `New Post: ${newPost.title}`,
                     html: `
-                  <h1>New Post on iBelieveQuest</h1>
-                  <h2>${newPost.title}</h2>
+                  <h1>${newPost.title}</h1>
+                  <img src="https://res.cloudinary.com/drcgnqg8m/image/upload/v1762079061/iBQ_vspudo.jpg" alt="iBelieveQuest" />
+                  <p>A new post is live on iBelieve Quest. It explores a question many believers quietly wrestle with. </p>
+                  <p>Check it out! Take your time. You might see the text differently. </p>
+                  <p>Let's know your thoughts. </p>
                   <p>${newPost.excerpt || 'Read our latest article!'}</p>
                   <a href="https://ibelievequest.com/posts/${newPost.id}">Read more</a>
-                  <p>Unsubscribe by replying to this email.</p>
                 `,
                 });
             } catch (e) {
