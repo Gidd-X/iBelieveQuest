@@ -1,5 +1,7 @@
 'use server';
 
+import { Resend } from 'resend';
+
 import { suggestReligiousPassages, type SuggestReligiousPassagesOutput } from '@/ai/flows/suggest-religious-passages';
 import { createServerClient } from '@/lib/supabase/server';
 import { createBuildTimeClient } from '@/lib/supabase/build-time';
@@ -67,7 +69,7 @@ export async function getArticles({ page = 1 }: { page: number }): Promise<{ art
   const articles = data.map(mapBlogToArticle);
   const totalPages = Math.ceil((count ?? 0) / ARTICLES_PER_PAGE);
   const hasMore = page * ARTICLES_PER_PAGE < (count ?? 0);
-  
+
   return { articles, hasMore, totalPages };
 }
 
@@ -77,19 +79,19 @@ export async function getArticles({ page = 1 }: { page: number }): Promise<{ art
  * @returns Article object or null if not found
  */
 export async function getArticleById(id: number): Promise<Article | null> {
-    const supabase = await createServerClient();
-    const { data, error } = await supabase
-        .from('Blogs')
-        .select('*')
-        .eq('id', id)
-        .single();
+  const supabase = await createServerClient();
+  const { data, error } = await supabase
+    .from('Blogs')
+    .select('*')
+    .eq('id', id)
+    .single();
 
-    if (error || !data) {
-        console.error('Error fetching article by id:', error);
-        return null;
-    }
+  if (error || !data) {
+    console.error('Error fetching article by id:', error);
+    return null;
+  }
 
-    return mapBlogToArticle(data);
+  return mapBlogToArticle(data);
 }
 
 /**
@@ -98,22 +100,22 @@ export async function getArticleById(id: number): Promise<Article | null> {
  * @returns Array of objects containing blog IDs as strings
  */
 export async function getAllArticleIds(): Promise<{ id: string }[]> {
-    try {
-        const supabase = createBuildTimeClient();
-        const { data, error } = await supabase.from('Blogs').select('id');
+  try {
+    const supabase = createBuildTimeClient();
+    const { data, error } = await supabase.from('Blogs').select('id');
 
-        if (error) {
-            console.error('Error fetching ids:', error);
-            return [];
-        }
-        // Handle case where data could be null
-        return (data || []).map((item: { id: number }) => ({ id: item.id.toString() }));
-    } catch (error) {
-        console.error('Error creating Supabase client or fetching IDs:', error);
-        // Return empty array if environment variables aren't available or other error occurs
-        // This allows the build to continue without static generation
-        return [];
+    if (error) {
+      console.error('Error fetching ids:', error);
+      return [];
     }
+    // Handle case where data could be null
+    return (data || []).map((item: { id: number }) => ({ id: item.id.toString() }));
+  } catch (error) {
+    console.error('Error creating Supabase client or fetching IDs:', error);
+    // Return empty array if environment variables aren't available or other error occurs
+    // This allows the build to continue without static generation
+    return [];
+  }
 }
 
 /**
@@ -125,7 +127,7 @@ export async function getPassageSuggestions(text: string): Promise<SuggestReligi
   if (!text || text.trim().length < 10) {
     return { error: 'Please enter more text to get suggestions.' };
   }
-  
+
   try {
     const result = await suggestReligiousPassages({ text });
     return result;
@@ -154,7 +156,7 @@ export async function postComment(blog_id: number, name: string, text: string): 
   }
 
   const supabase = await createServerClient();
-  
+
   // Supabase client type inference issue with async cookies API in Next.js 15
   // @ts-ignore
   const { data, error } = await supabase.from('comments').insert({ name, comment: text, blog_id }).select().single();
@@ -163,7 +165,7 @@ export async function postComment(blog_id: number, name: string, text: string): 
     console.error('Error posting comment:', error);
     return { data: null, error: 'Failed to post comment. Please try again later.' };
   }
-  
+
   return { data, error: null };
 }
 
@@ -220,5 +222,31 @@ export async function subscribeToNewsletter(
     return { error: 'Could not subscribe. Please try again later.' };
   }
 
-  return { success: 'Thank you for subscribing!' };
+  // Send welcome email
+  try {
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    const { data: emailData, error: resendError } = await resend.emails.send({
+      from: 'iBelieveQuest <contact@ibelievequest.com>', // Update this if you have a custom domain
+      to: email,
+      subject: 'Welcome to iBelieveQuest!',
+      html: `
+        <h1>Welcome to iBelieveQuest!</h1>
+        <p>Thank you for subscribing to our newsletter. We're excited to have you on board🤗.</p>
+        <p>Stay tuned for more interesting updates!</p>
+      `,
+    });
+
+    if (resendError) {
+      console.error('Resend API Error:', resendError);
+    } else {
+      console.log('Email sent successfully:', emailData);
+    }
+  } catch (emailError) {
+    console.error('Unexpected error sending welcome email:', emailError);
+    // Ideally we shouldn't fail the whole request if the email fails, 
+    // but we might want to log it or alert internally.
+    // For now, we will return a success message to the user but log the error.
+  }
+
+  return { success: 'Thank you for subscribing!🤗' };
 }
