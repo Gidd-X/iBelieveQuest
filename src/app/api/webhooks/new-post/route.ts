@@ -51,7 +51,6 @@ export async function POST(req: NextRequest) {
                     subject: `New Post: ${newPost.title}`,
                     html: `
                   <h1>${newPost.title}</h1>
-                  <img src="https://res.cloudinary.com/drcgnqg8m/image/upload/v1762079061/iBQ_vspudo.jpg" alt="iBelieveQuest" />
                   <p>A new post is live on iBelieve Quest. It explores a question many believers quietly wrestle with. </p>
                   <p>Check it out! Take your time. You might see the text differently. </p>
                   <p>Let's know your thoughts. </p>
