@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
-import { createServerClient } from '@/lib/supabase/server';
+import { createBuildTimeClient } from '@/lib/supabase/build-time';
 
 export async function POST(req: NextRequest) {
     // 1. Verify Secret to prevent unauthorized access
@@ -18,16 +18,22 @@ export async function POST(req: NextRequest) {
         }
 
         // 2. Fetch all subscribers
-        const supabase = await createServerClient();
+        const supabase = createBuildTimeClient();
         const { data: subscribers, error: subError } = await supabase
             .from('subscribers')
             .select('email');
 
-        // Type assertion or check to fix build error
-        if (subError || !subscribers || subscribers.length === 0) {
-            console.log('No subscribers found or error fetching them.');
+        if (subError) {
+            console.error('Error fetching subscribers:', subError);
+            return NextResponse.json({ error: 'Error fetching subscribers' }, { status: 500 });
+        }
+
+        if (!subscribers || subscribers.length === 0) {
+            console.log('No subscribers found.');
             return NextResponse.json({ message: 'No subscribers to notify' });
         }
+
+        console.log(`Found ${subscribers.length} subscribers. Starting notification process...`);
 
         const validSubscribers = subscribers as { email: string }[];
 
@@ -45,7 +51,7 @@ export async function POST(req: NextRequest) {
 
         const emailPromises = validSubscribers.map(async (sub) => {
             try {
-                await resend.emails.send({
+                const response = await resend.emails.send({
                     from: 'iBelieveQuest <contact@ibelievequest.com>',
                     to: sub.email,
                     subject: `New Post: ${newPost.title}`,
@@ -58,13 +64,20 @@ export async function POST(req: NextRequest) {
                   <a href="https://ibelievequest.com/posts/${newPost.id}">Read more</a>
                 `,
                 });
+
+                if (response.error) {
+                    console.error(`Resend error for ${sub.email}:`, response.error);
+                } else {
+                    console.log(`Notification sent to ${sub.email}`);
+                }
             } catch (e) {
-                console.error(`Failed to send to ${sub.email}`, e);
+                console.error(`Unexpected error sending to ${sub.email}`, e);
             }
         });
 
         await Promise.all(emailPromises);
 
+        console.log(`Finished sending notifications to ${subscribers.length} potential subscribers.`);
         return NextResponse.json({ success: true, count: subscribers.length });
     } catch (error) {
         console.error('Webhook error:', error);
