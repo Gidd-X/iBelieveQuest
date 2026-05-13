@@ -87,8 +87,13 @@ export default function Footer(): JSX.Element {
             </div>
           </div>
         </div>
-        <div className="mt-8 border-t pt-6 text-center text-sm text-muted-foreground">
+        <div className="mt-8 border-t pt-6 flex flex-col md:flex-row items-center justify-between text-sm text-muted-foreground gap-4">
           <p>&copy; {new Date().getFullYear()} iBelieveQuest. All rights reserved.</p>
+          <div className="flex gap-4">
+            <Link href="/privacy-policy" className="hover:text-primary transition-colors">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-primary transition-colors">Terms of Service</Link>
+            <Link href="/contact" className="hover:text-primary transition-colors">Contact Us</Link>
+          </div>
         </div>
       </div>
     </footer>

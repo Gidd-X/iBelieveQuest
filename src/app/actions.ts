@@ -259,3 +259,43 @@ export async function subscribeToNewsletter(
 
   return { success: 'Thank you for subscribing!🤗' };
 }
+
+/**
+ * Sends a message from the contact form.
+ * @param name The sender's name
+ * @param email The sender's email
+ * @param message The message content
+ * @returns An object with a success or error message.
+ */
+export async function sendMessage(name: string, email: string, message: string): Promise<{ success?: string; error?: string }> {
+  if (!name || name.trim().length === 0) {
+    return { error: 'Please enter your name.' };
+  }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return { error: 'Please enter a valid email address.' };
+  }
+  if (!message || message.trim().length === 0) {
+    return { error: 'Please enter a message.' };
+  }
+
+  try {
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    const { error: resendError } = await resend.emails.send({
+      from: 'iBelieve Quest Contact <contact@ibelievequest.com>', // Assuming this domain is verified in Resend
+      to: 'contact@ibelievequest.com', // Sending to the site owner
+      replyTo: email,
+      subject: `New Contact Form Message from ${name}`,
+      text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
+    });
+
+    if (resendError) {
+      console.error('Resend API Error (Contact Form):', resendError);
+      return { error: 'Failed to send message. Please try again later.' };
+    }
+
+    return { success: 'Your message has been sent successfully. We will get back to you soon!' };
+  } catch (error) {
+    console.error('Unexpected error sending contact message:', error);
+    return { error: 'An unexpected error occurred. Please try again later.' };
+  }
+}
