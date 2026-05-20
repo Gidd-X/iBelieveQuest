@@ -1,5 +1,7 @@
+import { Suspense } from 'react';
 import { getArticles } from '@/app/actions';
 import ArticleCard from '@/components/article-card';
+import ArticleSkeleton from '@/components/article-skeleton';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
@@ -8,24 +10,11 @@ interface HomePageProps {
   searchParams: Promise<{ page?: string }>;
 }
 
-/**
- * Home page component
- * Displays paginated list of blog articles
- */
-export default async function Home({ searchParams }: HomePageProps): Promise<JSX.Element> {
-  const { page: pageParam } = await searchParams;
-  const page = Number(pageParam) || 1;
+async function ArticleList({ page }: { page: number }) {
   const { articles, hasMore, totalPages } = await getArticles({ page });
 
   return (
-    <div className="space-y-12">
-      <div className="text-center">
-        <h1 className="font-headline text-4xl font-bold text-primary md:text-5xl">Welcome to iBelieve Quest</h1>
-        <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-          A space where faith meets questions, and questions lead to discovery.
-        </p>
-      </div>
-      
+    <>
       {articles.length > 0 ? (
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {articles.map((article) => (
@@ -57,6 +46,40 @@ export default async function Home({ searchParams }: HomePageProps): Promise<JSX
           </Button>
         </div>
       )}
+    </>
+  );
+}
+
+function ArticleListFallback() {
+  return (
+    <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <ArticleSkeleton key={i} />
+      ))}
+    </div>
+  );
+}
+
+/**
+ * Home page component
+ * Displays paginated list of blog articles
+ */
+export default async function Home({ searchParams }: HomePageProps): Promise<JSX.Element> {
+  const { page: pageParam } = await searchParams;
+  const page = Number(pageParam) || 1;
+
+  return (
+    <div className="space-y-12">
+      <div className="text-center">
+        <h1 className="font-headline text-4xl font-bold text-primary md:text-5xl">Welcome to iBelieve Quest</h1>
+        <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
+          A space where faith meets questions, and questions lead to discovery.
+        </p>
+      </div>
+      
+      <Suspense key={page} fallback={<ArticleListFallback />}>
+        <ArticleList page={page} />
+      </Suspense>
     </div>
   );
 }

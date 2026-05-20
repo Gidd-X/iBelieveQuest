@@ -1,6 +1,7 @@
 'use server';
 
 import { Resend } from 'resend';
+import { unstable_cache } from 'next/cache';
 
 import { suggestReligiousPassages, type SuggestReligiousPassagesOutput } from '@/ai/flows/suggest-religious-passages';
 import { createServerClient } from '@/lib/supabase/server';
@@ -50,49 +51,57 @@ const mapBlogToArticle = (blog: Tables<'Blogs'>): Article => {
  * @param page - Page number (1-indexed)
  * @returns Object containing articles array, hasMore flag, and total pages
  */
-export async function getArticles({ page = 1 }: { page: number }): Promise<{ articles: Article[], hasMore: boolean, totalPages: number }> {
-  const supabase = await createServerClient();
-  const from = (page - 1) * ARTICLES_PER_PAGE;
-  const to = from + ARTICLES_PER_PAGE - 1;
+export const getArticles = unstable_cache(
+  async ({ page = 1 }: { page: number }): Promise<{ articles: Article[], hasMore: boolean, totalPages: number }> => {
+    const supabase = createBuildTimeClient();
+    const from = (page - 1) * ARTICLES_PER_PAGE;
+    const to = from + ARTICLES_PER_PAGE - 1;
 
-  const { data, error, count } = await supabase
-    .from('Blogs')
-    .select('*', { count: 'exact' })
-    .order('created_at', { ascending: false })
-    .range(from, to);
+    const { data, error, count } = await supabase
+      .from('Blogs')
+      .select('*', { count: 'exact' })
+      .order('created_at', { ascending: false })
+      .range(from, to);
 
-  if (error) {
-    console.error('Error fetching articles:', error);
-    return { articles: [], hasMore: false, totalPages: 0 };
-  }
+    if (error) {
+      console.error('Error fetching articles:', error);
+      return { articles: [], hasMore: false, totalPages: 0 };
+    }
 
-  const articles = data.map(mapBlogToArticle);
-  const totalPages = Math.ceil((count ?? 0) / ARTICLES_PER_PAGE);
-  const hasMore = page * ARTICLES_PER_PAGE < (count ?? 0);
+    const articles = data.map(mapBlogToArticle);
+    const totalPages = Math.ceil((count ?? 0) / ARTICLES_PER_PAGE);
+    const hasMore = page * ARTICLES_PER_PAGE < (count ?? 0);
 
-  return { articles, hasMore, totalPages };
-}
+    return { articles, hasMore, totalPages };
+  },
+  ['articles'],
+  { revalidate: 3600, tags: ['articles'] }
+);
 
 /**
  * Fetches a single blog article by ID
  * @param id - Numeric blog ID
  * @returns Article object or null if not found
  */
-export async function getArticleById(id: number): Promise<Article | null> {
-  const supabase = await createServerClient();
-  const { data, error } = await supabase
-    .from('Blogs')
-    .select('*')
-    .eq('id', id)
-    .single();
+export const getArticleById = unstable_cache(
+  async (id: number): Promise<Article | null> => {
+    const supabase = createBuildTimeClient();
+    const { data, error } = await supabase
+      .from('Blogs')
+      .select('*')
+      .eq('id', id)
+      .single();
 
-  if (error || !data) {
-    console.error('Error fetching article by id:', error);
-    return null;
-  }
+    if (error || !data) {
+      console.error('Error fetching article by id:', error);
+      return null;
+    }
 
-  return mapBlogToArticle(data);
-}
+    return mapBlogToArticle(data);
+  },
+  ['article-by-id'],
+  { revalidate: 3600, tags: ['article'] }
+);
 
 /**
  * Fetches all blog IDs for static site generation
