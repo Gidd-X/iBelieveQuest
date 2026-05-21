@@ -3,7 +3,7 @@
 import { Resend } from 'resend';
 import { unstable_cache } from 'next/cache';
 
-import { suggestReligiousPassages, type SuggestReligiousPassagesOutput } from '@/ai/flows/suggest-religious-passages';
+import type { SuggestReligiousPassagesOutput } from '@/ai/flows/suggest-religious-passages';
 import { createServerClient } from '@/lib/supabase/server';
 import { createBuildTimeClient } from '@/lib/supabase/build-time';
 import type { Tables } from '@/lib/supabase.type';
@@ -138,6 +138,7 @@ export async function getPassageSuggestions(text: string): Promise<SuggestReligi
   }
 
   try {
+    const { suggestReligiousPassages } = await import('@/ai/flows/suggest-religious-passages');
     const result = await suggestReligiousPassages({ text });
     return result;
   } catch (e) {
