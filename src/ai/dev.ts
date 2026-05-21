@@ -1,4 +1,5 @@
 import { config } from 'dotenv';
 config();
 
-import '@/ai/flows/suggest-religious-passages.ts';
+import { initFlows } from '@/ai/flows/suggest-religious-passages';
+initFlows().catch(console.error);

@@ -7,8 +7,8 @@
  * - SuggestReligiousPassagesOutput - The return type for the suggestReligiousPassages function.
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { z } from 'zod';
+import { getAi } from '@/ai/genkit';
 
 const SuggestReligiousPassagesInputSchema = z.object({
   text: z
@@ -28,31 +28,42 @@ export type SuggestReligiousPassagesOutput = z.infer<
   typeof SuggestReligiousPassagesOutputSchema
 >;
 
-export async function suggestReligiousPassages(
-  input: SuggestReligiousPassagesInput
-): Promise<SuggestReligiousPassagesOutput> {
-  return suggestReligiousPassagesFlow(input);
-}
+let suggestFlow: any = null;
 
-const prompt = ai.definePrompt({
-  name: 'suggestReligiousPassagesPrompt',
-  input: {schema: SuggestReligiousPassagesInputSchema},
-  output: {schema: SuggestReligiousPassagesOutputSchema},
-  prompt: `You are a helpful assistant that suggests relevant passages from religious texts based on the content provided. The passages should enrich the articles and provide deeper context to readers.
+export async function initFlows() {
+  if (suggestFlow) return suggestFlow;
+
+  const ai = await getAi();
+
+  const prompt = ai.definePrompt({
+    name: 'suggestReligiousPassagesPrompt',
+    input: {schema: SuggestReligiousPassagesInputSchema},
+    output: {schema: SuggestReligiousPassagesOutputSchema},
+    prompt: `You are a helpful assistant that suggests relevant passages from religious texts based on the content provided. The passages should enrich the articles and provide deeper context to readers.
 
 Content: {{{text}}}
 
 Suggest religious passages:`,
-});
+  });
 
-const suggestReligiousPassagesFlow = ai.defineFlow(
-  {
-    name: 'suggestReligiousPassagesFlow',
-    inputSchema: SuggestReligiousPassagesInputSchema,
-    outputSchema: SuggestReligiousPassagesOutputSchema,
-  },
-  async input => {
-    const {output} = await prompt(input);
-    return output!;
-  }
-);
+  suggestFlow = ai.defineFlow(
+    {
+      name: 'suggestReligiousPassagesFlow',
+      inputSchema: SuggestReligiousPassagesInputSchema,
+      outputSchema: SuggestReligiousPassagesOutputSchema,
+    },
+    async (input: any) => {
+      const {output} = await prompt(input);
+      return output!;
+    }
+  );
+
+  return suggestFlow;
+}
+
+export async function suggestReligiousPassages(
+  input: SuggestReligiousPassagesInput
+): Promise<SuggestReligiousPassagesOutput> {
+  const flow = await initFlows();
+  return flow(input);
+}

@@ -1,7 +1,7 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-
+  serverExternalPackages: ['genkit', '@genkit-ai/core', '@genkit-ai/googleai'],
   images: {
     remotePatterns: [
       {
