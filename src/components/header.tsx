@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { Search, BookOpenText } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 
 /**
@@ -14,7 +14,7 @@ export default function Header(): JSX.Element {
         <div className="flex h-20 items-center justify-between">
           <div className="flex items-center">
             <Link href="/" className="flex items-center gap-2">
-              <BookOpenText className="h-10 w-10 text-primary" />
+              <Image src="/logo.png" alt="iBelieveQuest Logo" width={40} height={40} className="h-10 w-10 object-contain" />
               <span className="font-headline text-2xl font-bold text-primary">iBelieveQuest</span>
             </Link>
           </div>

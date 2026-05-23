@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Facebook, Send as TelegramIcon, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
 import { subscribeToNewsletter } from '@/app/actions';
 
@@ -43,7 +44,10 @@ export default function Footer(): JSX.Element {
       <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
         <div className="grid gap-8 md:grid-cols-3">
           <div className="md:col-span-1">
-            <h3 className="font-headline text-lg font-bold text-primary">iBelieveQuest</h3>
+            <div className="flex items-center gap-2">
+              <Image src="/logo.png" alt="iBelieveQuest Logo" width={32} height={32} className="object-contain" />
+              <h3 className="font-headline text-lg font-bold text-primary">iBelieveQuest</h3>
+            </div>
             <p className="mt-2 text-sm text-muted-foreground">
               One question, one truth, one step at a time.
             </p>
