@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 import CookieBanner from '@/components/cookie-banner';
+import Script from 'next/script';
 
 const literata = Literata({
   subsets: ['latin'],
@@ -35,6 +36,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4836711180333592"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
       </head>
       <body className={`${literata.variable} ${playfair.variable} font-body antialiased bg-background text-foreground`}>
         <div className="flex min-h-screen flex-col">
