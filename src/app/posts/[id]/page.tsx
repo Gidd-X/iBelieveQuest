@@ -6,6 +6,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import type { Metadata } from 'next';
 import CommentSection from '@/components/comment-section';
+import { ReadingProgress } from '@/components/reading-progress';
+import { AnimatedArticle } from '@/components/animated-article';
 
 // Allow dynamic params for articles not in generateStaticParams
 export const dynamicParams = true;
@@ -61,7 +63,9 @@ export default async function ArticlePage({ params }: ArticlePageProps): Promise
   }
 
   return (
-    <article className="mx-auto max-w-4xl">
+    <>
+      <ReadingProgress />
+      <AnimatedArticle className="mx-auto max-w-4xl">
       <div className="mb-8">
         <div className="mb-4 flex flex-wrap gap-2">
           {article.tags.map((tag) => (
@@ -102,7 +106,7 @@ export default async function ArticlePage({ params }: ArticlePageProps): Promise
       <Separator className="my-12" />
 
       <CommentSection blogId={parseInt(article.id, 10)} />
-
-    </article>
+    </AnimatedArticle>
+    </>
   );
 }

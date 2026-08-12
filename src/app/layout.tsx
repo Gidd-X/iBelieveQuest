@@ -6,6 +6,7 @@ import Header from '@/components/header';
 import Footer from '@/components/footer';
 import CookieBanner from '@/components/cookie-banner';
 import Script from 'next/script';
+import { ThemeProvider } from "@/components/theme-provider";
 
 const literata = Literata({
   subsets: ['latin'],
@@ -34,7 +35,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <Script
           async
@@ -43,16 +44,18 @@ export default function RootLayout({
           strategy="afterInteractive"
         />
       </head>
-      <body className={`${literata.variable} ${playfair.variable} font-body antialiased bg-background text-foreground`}>
-        <div className="flex min-h-screen flex-col">
-          <Header />
-          <main className="container mx-auto flex-grow px-4 py-8 sm:px-6 md:py-12 lg:px-8">
-            {children}
-          </main>
-          <Footer />
-        </div>
-        <CookieBanner />
-        <Toaster />
+      <body className={`${literata.variable} ${playfair.variable} font-body antialiased bg-background text-foreground transition-colors duration-300`}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <div className="flex min-h-screen flex-col">
+            <Header />
+            <main className="container mx-auto flex-grow px-4 py-8 sm:px-6 md:py-12 lg:px-8">
+              {children}
+            </main>
+            <Footer />
+          </div>
+          <CookieBanner />
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

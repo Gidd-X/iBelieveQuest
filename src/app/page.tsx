@@ -5,6 +5,8 @@ import ArticleSkeleton from '@/components/article-skeleton';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { AnimatedGrid } from '@/components/animated-grid';
+import { AnimatedHero } from '@/components/animated-hero';
 
 interface HomePageProps {
   searchParams: Promise<{ page?: string }>;
@@ -16,11 +18,11 @@ async function ArticleList({ page }: { page: number }) {
   return (
     <>
       {articles.length > 0 ? (
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {articles.map((article) => (
-            <ArticleCard key={article.id} article={article} />
+        <AnimatedGrid className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {articles.map((article, index) => (
+            <ArticleCard key={article.id} article={article} index={index} />
           ))}
-        </div>
+        </AnimatedGrid>
       ) : (
         <div className="text-center text-muted-foreground">
           <p>No articles found.</p>
@@ -70,12 +72,7 @@ export default async function Home({ searchParams }: HomePageProps): Promise<JSX
 
   return (
     <div className="space-y-12">
-      <div className="text-center">
-        <h1 className="font-headline text-4xl font-bold text-primary md:text-5xl">Welcome to iBelieve Quest</h1>
-        <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-          A space where faith meets questions, and questions lead to discovery.
-        </p>
-      </div>
+      <AnimatedHero />
       
       <Suspense key={page} fallback={<ArticleListFallback />}>
         <ArticleList page={page} />
