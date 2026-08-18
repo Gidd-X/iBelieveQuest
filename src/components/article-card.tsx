@@ -26,6 +26,11 @@ const itemVariants = {
     x: 0, 
     transition: { type: "spring", stiffness: 300, damping: 24 } 
   },
+  exit: { 
+    opacity: 0, 
+    x: 50, 
+    transition: { duration: 0.2 } 
+  }
 };
 
 /**

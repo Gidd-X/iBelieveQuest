@@ -1,6 +1,6 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import * as React from "react"
 
 const containerVariants = {
@@ -11,23 +11,36 @@ const containerVariants = {
       staggerChildren: 0.1,
     },
   },
+  exit: {
+    opacity: 0,
+    transition: {
+      staggerChildren: 0.05,
+      staggerDirection: -1,
+    }
+  }
 }
 
 export function AnimatedGrid({
   children,
   className,
+  gridKey,
 }: {
   children: React.ReactNode
   className?: string
+  gridKey?: string | number
 }) {
   return (
-    <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-      className={className}
-    >
-      {children}
-    </motion.div>
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={gridKey}
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+        className={className}
+      >
+        {children}
+      </motion.div>
+    </AnimatePresence>
   )
 }

@@ -18,7 +18,7 @@ async function ArticleList({ page }: { page: number }) {
   return (
     <>
       {articles.length > 0 ? (
-        <AnimatedGrid className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <AnimatedGrid className="grid gap-8 md:grid-cols-2 lg:grid-cols-3" gridKey={page}>
           {articles.map((article, index) => (
             <ArticleCard key={article.id} article={article} index={index} />
           ))}
