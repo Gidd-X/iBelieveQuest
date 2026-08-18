@@ -11,6 +11,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import type { Tables } from '@/lib/supabase.type';
 
+import { motion, AnimatePresence } from 'framer-motion';
+
 interface AiSuggesterProps {
   blogId: number;
   onCommentPosted: (comment: Tables<'comments'>) => void;
@@ -140,36 +142,70 @@ export default function AiSuggester({ blogId, onCommentPosted }: AiSuggesterProp
             </Button>
           </div>
         </CardContent>
-        {(isGettingSuggestions || suggestions.length > 0 || error) && (
-        <CardFooter className="flex flex-col items-start gap-4">
-            {isGettingSuggestions && (
-              <div className="flex items-center text-muted-foreground">
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                <span>Searching sacred texts for relevant passages...</span>
-              </div>
-            )}
-            {error && !isLoading && (
-              <Alert variant="destructive">
-                <AlertCircle className="h-4 w-4" />
-                <AlertTitle>Error</AlertTitle>
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
-            {suggestions.length > 0 && !isGettingSuggestions && (
-              <div className="w-full space-y-4">
-                <h4 className="font-semibold">Suggested Passages:</h4>
-                <ul className="space-y-4">
-                  {suggestions.map((suggestion, index) => (
-                    <li key={index} className="flex gap-3">
-                      <Quote className="h-5 w-5 flex-shrink-0 text-primary" />
-                      <p className="border-l-2 border-accent pl-4 italic text-muted-foreground">{suggestion}</p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-        </CardFooter>
-        )}
+        
+        <AnimatePresence>
+          {(isGettingSuggestions || suggestions.length > 0 || error) && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="overflow-hidden"
+            >
+              <CardFooter className="flex flex-col items-start gap-4 border-t pt-6">
+                  {isGettingSuggestions && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="flex items-center text-muted-foreground"
+                    >
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      <span>Searching sacred texts for relevant passages...</span>
+                    </motion.div>
+                  )}
+                  {error && !isLoading && (
+                    <Alert variant="destructive">
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertTitle>Error</AlertTitle>
+                      <AlertDescription>{error}</AlertDescription>
+                    </Alert>
+                  )}
+                  {suggestions.length > 0 && !isGettingSuggestions && (
+                    <motion.div
+                      initial="hidden"
+                      animate="visible"
+                      variants={{
+                        hidden: { opacity: 0 },
+                        visible: {
+                          opacity: 1,
+                          transition: { staggerChildren: 0.1 }
+                        }
+                      }}
+                      className="w-full space-y-4"
+                    >
+                      <h4 className="font-semibold">Suggested Passages:</h4>
+                      <ul className="space-y-4">
+                        {suggestions.map((suggestion, index) => (
+                          <motion.li
+                            key={index}
+                            variants={{
+                              hidden: { opacity: 0, y: 10 },
+                              visible: { opacity: 1, y: 0 }
+                            }}
+                            className="flex gap-3"
+                          >
+                            <Quote className="h-5 w-5 flex-shrink-0 text-primary" />
+                            <p className="border-l-2 border-accent pl-4 italic text-muted-foreground">{suggestion}</p>
+                          </motion.li>
+                        ))}
+                      </ul>
+                    </motion.div>
+                  )}
+              </CardFooter>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </Card>
     </section>
   );
