@@ -88,7 +88,7 @@ export function LatestQuestions({ articles }: LatestQuestionsProps) {
                 <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-primary/10 to-accent/10 opacity-0 group-hover:opacity-100 transition duration-500 blur-xl" />
               )}
               
-              <a href={`/posts/${firstArticle.id}`} onClick={(e) => handleExpand(e, firstArticle.id)} className="block relative h-full w-full outline-none">
+              <Link href={`/posts/${firstArticle.id}`} onClick={(e) => handleExpand(e, firstArticle.id)} className="block relative h-full w-full outline-none prefetch-intent">
                 <div className={`flex flex-col overflow-hidden transition-all duration-300 ${expandingId === firstArticle.id ? 'h-full justify-start' : 'border border-border/50 bg-card rounded-xl p-8 md:p-12 h-full justify-center min-h-[400px] group-hover:border-primary/30'}`}>
                   
                   {/* Hero Image appears only when expanding */}
@@ -161,7 +161,7 @@ export function LatestQuestions({ articles }: LatestQuestionsProps) {
                     </AnimatePresence>
                   </div>
                 </div>
-              </a>
+              </Link>
             </motion.div>
           </div>
         )}
@@ -180,7 +180,7 @@ export function LatestQuestions({ articles }: LatestQuestionsProps) {
                 : "relative group h-full w-full"
               }
             >
-              <a href={`/posts/${secondArticle.id}`} onClick={(e) => handleExpand(e, secondArticle.id)} className="block h-full py-12 outline-none">
+              <Link href={`/posts/${secondArticle.id}`} onClick={(e) => handleExpand(e, secondArticle.id)} className="block h-full py-12 outline-none prefetch-intent">
                 <div className={`flex flex-col h-full ${expandingId === secondArticle.id ? 'justify-start' : 'justify-center min-h-[300px]'}`}>
                   
                   {/* Hero Image appears only when expanding */}
@@ -253,7 +253,7 @@ export function LatestQuestions({ articles }: LatestQuestionsProps) {
                     </AnimatePresence>
                   </div>
                 </div>
-              </a>
+              </Link>
             </motion.div>
           </div>
         )}

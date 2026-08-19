@@ -78,7 +78,7 @@ export default function ArticleCard({ article, index = 0 }: ArticleCardProps): J
         }
         style={{ borderRadius: isExpanding ? 0 : 12 }}
       >
-        <a href={`/posts/${article.id}`} onClick={handleClick} className="group flex flex-col h-full w-full cursor-pointer outline-none">
+        <Link href={`/posts/${article.id}`} onClick={handleClick} className="group flex flex-col h-full w-full cursor-pointer outline-none prefetch-intent">
           <Card className={`flex h-full flex-col overflow-hidden shadow-sm transition-shadow duration-300 ${!isExpanding && 'hover:shadow-xl dark:border-border/50'} ${isExpanding && 'border-none rounded-none shadow-none'}`}>
             <CardHeader className="p-0">
               <motion.div 
@@ -160,7 +160,7 @@ export default function ArticleCard({ article, index = 0 }: ArticleCardProps): J
               )}
             </AnimatePresence>
           </Card>
-        </a>
+        </Link>
       </motion.div>
     </>
   );
