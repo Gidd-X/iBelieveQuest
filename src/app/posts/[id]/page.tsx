@@ -65,30 +65,8 @@ export default async function ArticlePage({ params }: ArticlePageProps): Promise
   return (
     <>
       <ReadingProgress />
-      <AnimatedArticle className="mx-auto max-w-4xl">
-      <div className="mb-8">
-        <div className="mb-4 flex flex-wrap gap-2">
-          {article.tags.map((tag) => (
-            <Badge key={tag} variant="default" className="capitalize">{tag}</Badge>
-          ))}
-        </div>
-        <h1 className="font-headline text-4xl font-bold leading-tight text-primary md:text-5xl">
-          {article.title}
-        </h1>
-        <div className="mt-4 flex items-center gap-4 text-sm text-muted-foreground">
-          <div className="flex items-center gap-2">
-            <Avatar className="h-8 w-8">
-              <AvatarImage src={article.authorAvatarUrl} alt={article.author} />
-              <AvatarFallback>{article.author.charAt(0)}</AvatarFallback>
-            </Avatar>
-            <span>{article.author}</span>
-          </div>
-          <span>&bull;</span>
-          <span>{article.date}</span>
-        </div>
-      </div>
-
-      <div className="relative mb-8 h-64 w-full overflow-hidden rounded-lg shadow-lg md:h-96">
+      
+      <div className="relative w-full overflow-hidden h-[40vh] md:h-[50vh]">
         <Image
           src={article.coverPhoto.src}
           alt={article.coverPhoto.alt}
@@ -96,17 +74,44 @@ export default async function ArticlePage({ params }: ArticlePageProps): Promise
           className="object-cover"
           priority
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
       </div>
 
-      <div
-        className="space-y-6 text-lg leading-relaxed text-foreground/90 [&_p]:mb-4"
-        dangerouslySetInnerHTML={{ __html: article.content }}
-      />
-      
-      <Separator className="my-12" />
+      <AnimatedArticle className="mx-auto max-w-4xl px-6 pt-12 pb-24">
+        <div className="mb-12">
+          <h1 className="font-headline text-4xl md:text-6xl font-bold leading-tight text-foreground mb-6">
+            {article.title}
+          </h1>
+          
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="flex items-center space-x-4">
+              <Avatar className="h-10 w-10">
+                <AvatarImage src={article.authorAvatarUrl} alt={article.author} />
+                <AvatarFallback>{article.author.charAt(0)}</AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="text-sm font-medium">{article.author}</p>
+                <p className="text-xs text-muted-foreground">{article.date}</p>
+              </div>
+            </div>
+            
+            <div className="flex flex-wrap gap-2">
+              {article.tags.map((tag) => (
+                <Badge key={tag} variant="secondary" className="capitalize">{tag}</Badge>
+              ))}
+            </div>
+          </div>
+        </div>
 
-      <CommentSection blogId={parseInt(article.id, 10)} />
-    </AnimatedArticle>
+        <div
+          className="space-y-6 text-lg leading-relaxed text-foreground/90 [&_p]:mb-4"
+          dangerouslySetInnerHTML={{ __html: article.content }}
+        />
+        
+        <Separator className="my-16" />
+
+        <CommentSection blogId={parseInt(article.id, 10)} />
+      </AnimatedArticle>
     </>
   );
 }
